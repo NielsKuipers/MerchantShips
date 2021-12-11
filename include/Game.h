@@ -6,11 +6,19 @@
 #define MERCHANTSHIPS_GAME_H
 
 
+#include <harbor/Harbor.h>
+#include <ship/Ship.h>
+#include <optional>
+#include <DBManager.h>
+
 class Game
 {
+    bool playing{false};
+    Ship *ship;
+    std::optional<Harbor> currentLocation;
 public:
     int play();
-    Game() = default;
+    Game();
 };
 
 

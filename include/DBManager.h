@@ -26,13 +26,13 @@ namespace DB
 
     static std::vector<std::vector<std::string>> selectData(const std::string &query)
     {
-        sqlite3_stmt *stmt;
+        sqlite3_stmt *stmt{nullptr};
         sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
         sqlite3_step(stmt);
         const int columns{sqlite3_data_count(stmt)};
         std::vector<std::vector<std::string>> result;
 
-        while (sqlite3_column_int(stmt, 0))
+        while (sqlite3_column_text(stmt, 0))
         {
             std::vector<std::string> data{};
 
