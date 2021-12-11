@@ -5,18 +5,11 @@
 #include "Game.h"
 #include <sqlite/sqlite3.h>
 #include <iostream>
+#include <DBManager.h>
 
 int Game::play()
 {
-    sqlite3 *db;
-    int conn{sqlite3_open("../database/handelsschepen.db", &db)};
-
-    if(conn)
-        std::cout << "can't open db" << sqlite3_errmsg(db);
-    else
-        std::cout << "epic";
-
-    sqlite3_close(db);
+    DB::connect();
 
     return 1;
 }
