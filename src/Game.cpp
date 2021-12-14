@@ -2,7 +2,7 @@
 // Created by Niels on 09/12/21.
 //
 
-#include "Game.h"
+#include "game/Game.h"
 
 int Game::play()
 {
@@ -12,7 +12,7 @@ int Game::play()
 
     while (playing)
     {
-
+        handleInput(_getch());
     }
 
     return 1;
@@ -21,6 +21,31 @@ int Game::play()
 Game::Game()
 {
     DB::connect();
-    const auto randomHarbor {DB::selectData("SELECT id, haven FROM havens ORDER BY RANDOM() LIMIT 1")[0]};
-    currentLocation = Harbor(std::stoi(randomHarbor[0]), randomHarbor[1]);
+    const auto randomHarbor{DB::selectData("SELECT id, haven FROM havens ORDER BY RANDOM() LIMIT 1")[0]};
+    changeLocation(Harbor{std::stoi(randomHarbor[0]), randomHarbor[1]});
+
+    playing = true;
+
+    //make cursor invisible for menu
+    CONSOLE_CURSOR_INFO cursor;
+    cursor.dwSize = 100;
+    cursor.bVisible = false;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor);
+}
+
+void Game::handleInput(int key) const
+{
+    //double code for arrow key
+    if (key == 224)
+        return;
+
+    currentLocation->handleInput(key);
+}
+
+template<typename T>
+void Game::changeLocation(T location)
+{
+    currentLocation = std::make_unique<T>(location);
+    currentLocation->showOptions();
+    menuHandler::setCursor(currentLocation->getOptions()[0], 0, 0);
 }

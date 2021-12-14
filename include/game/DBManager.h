@@ -12,7 +12,7 @@
 
 namespace DB
 {
-    static sqlite3 *db;
+    inline sqlite3 *db;
 
     static void connect()
     {
@@ -20,8 +20,6 @@ namespace DB
 
         if (conn)
             std::cout << "can't open db" << sqlite3_errmsg(db);
-        else
-            std::cout << "database connection success" << std::endl;
     }
 
     static std::vector<std::vector<std::string>> selectData(const std::string &query)

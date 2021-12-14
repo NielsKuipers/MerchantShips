@@ -5,17 +5,22 @@
 #ifndef MERCHANTSHIPS_GAME_H
 #define MERCHANTSHIPS_GAME_H
 
-
 #include <harbor/Harbor.h>
 #include <ship/Ship.h>
-#include <optional>
-#include <DBManager.h>
+#include "DBManager.h"
+#include <conio.h>
+#include <iomanip>
 
 class Game
 {
     bool playing{false};
     Ship *ship;
-    std::optional<Harbor> currentLocation;
+    std::unique_ptr<Place> currentLocation;
+
+    void handleInput(int key) const;
+
+    template<typename T>
+    void changeLocation(T location);
 public:
     int play();
     Game();

@@ -1,0 +1,14 @@
+//
+// Created by Niels on 14/12/21.
+//
+
+#ifndef MERCHANTSHIPS_HARBORSTATES_H
+#define MERCHANTSHIPS_HARBORSTATES_H
+
+enum class HarborStates
+{
+    TRADING, CANONS, SHIPS, LEAVING, REPAIRING, QUIT, MENU
+};
+
+#endif //MERCHANTSHIPS_HARBORSTATES_H
+

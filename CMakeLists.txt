@@ -2,16 +2,16 @@ cmake_minimum_required(VERSION 3.20)
 project(MerchantShips)
 
 set(CMAKE_CXX_STANDARD 17)
-set(SOURCE_FILES src/main.cpp include/sqlite/sqlite3.c include/DBManager.h src/ship/Ship.cpp include/ship/Ship.h src/harbor/Harbor.cpp include/harbor/Harbor.h)
+
 
 add_library(MerchantShips-common STATIC
-        src/Game.cpp include/Game.h include/RandomGeneration.h)
+        src/Game.cpp include/game/RandomGeneration.h include/game/DBManager.h src/ship/Ship.cpp src/harbor/Harbor.cpp include/interface/Place.h include/game/menuHandler.h)
 
 target_include_directories(MerchantShips-common PRIVATE
         src
         PUBLIC
         include)
 
-add_executable(MerchantShips ${SOURCE_FILES})
+add_executable(MerchantShips src/main.cpp include/sqlite/sqlite3.c include/harbor/HarborStates.h)
 
 target_link_libraries(MerchantShips PRIVATE MerchantShips-common)
