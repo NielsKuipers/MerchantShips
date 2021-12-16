@@ -5,7 +5,6 @@
 #ifndef MERCHANTSHIPS_HARBOR_H
 #define MERCHANTSHIPS_HARBOR_H
 
-
 #include <string>
 #include <interface/Place.h>
 #include <game/menuHandler.h>
@@ -13,6 +12,8 @@
 #include <game/RandomGeneration.h>
 #include <harbor/HarborStates.h>
 #include <map>
+#include <optional>
+#include "ship/Ship.h"
 
 class Harbor : public Place
 {
@@ -20,18 +21,27 @@ class Harbor : public Place
 
     int id;
     std::string name;
+    int minLine{0};
     std::vector<std::string> menu;
     std::vector<std::tuple<std::string, int, int>> goods{};
     HarborStates currentState{HarborStates::MENU};
+    std::optional<Ship> currentShip{std::nullopt};
 
     void generateGoods();
+
+    void displayShop();
+
+    template<typename T>
+    void setState(T state);
+
+    void buyItem(int y);
+
+    void sellItem(int y);
 
 public:
     Harbor(int id, const std::string &name);
 
-    void setState(int number);
-
-    void displayShop();
+    void displayMenu();
 };
 
 

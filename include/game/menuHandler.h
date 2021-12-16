@@ -14,43 +14,15 @@
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 #define KEY_SPACE 32
+#define KEY_B 98
+#define KEY_S 115
+#define KEY_BACKSPACE 8
 
 namespace menuHandler
 {
     static int posX{0};
     static int posY{0};
     static std::string previousLine;
-
-    static int handleInput(int key, int max)
-    {
-        switch (key)
-        {
-            case KEY_UP:
-                posY -= 1;
-                break;
-            case KEY_DOWN:
-                posY += 1;
-                break;
-            case KEY_LEFT:
-                posX -= 1;
-                break;
-            case KEY_RIGHT:
-                posX += 1;
-                break;
-            case KEY_SPACE:
-                posX = posY = 0;
-                previousLine = "";
-            default:
-                break;
-        }
-
-        if (posY > max - 1)
-            posY = max - 1;
-        else if (posY < 0)
-            posY = 0;
-
-        return posY;
-    }
 
     static void setCursor(const std::string &line, short x = posX, short y = posY)
     {
@@ -71,6 +43,57 @@ namespace menuHandler
         std::cout << line << '\r';
 
         SetConsoleTextAttribute(h, 7);
+    }
+
+    static void resetCursor()
+    {
+        previousLine = "";
+        posX = posY = 0;
+    }
+
+    static std::tuple<int, int> handleInput(std::vector<std::string> &line, int key, int min, int max)
+    {
+        switch (key)
+        {
+            case KEY_UP:
+                posY -= 1;
+                break;
+            case KEY_DOWN:
+                posY += 1;
+                break;
+            case KEY_LEFT:
+                posX -= 1;
+                break;
+            case KEY_RIGHT:
+                posX += 1;
+                break;
+            default:
+                return std::make_tuple(posX, (posY - min));
+        }
+
+        if (posY > max - 1)
+            posY = max - 1;
+        else if (posY < min)
+            posY = min;
+
+        setCursor(line[posY - min]);
+        return std::make_tuple(posX, (posY - min));
+    }
+
+    static int getInput()
+    {
+        int result;
+
+        std::cin >> result;
+        while (!std::cin.good())
+        {
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+            std::cout << "What are you saying? that's not a number, try again.";
+            std::cin >> result;
+        }
+
+        return result;
     }
 }
 

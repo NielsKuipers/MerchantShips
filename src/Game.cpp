@@ -46,6 +46,5 @@ template<typename T>
 void Game::changeLocation(T location)
 {
     currentLocation = std::make_unique<T>(location);
-    currentLocation->showOptions();
     menuHandler::setCursor(currentLocation->getOptions()[0], 0, 0);
 }

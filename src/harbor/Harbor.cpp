@@ -9,32 +9,27 @@ Harbor::Harbor(int id, const std::string &name)
     this->id = id;
     this->name = name;
 
-    menu =
-            {
-                    "1. Trade goods",
-                    "2. Trade canons",
-                    "3. Trade ships",
-                    "4. Leave harbor",
-                    "5. Repair ship",
-                    "6. Quit game"
-            };
-
-    this->setOptions(menu);
+    displayMenu();
     generateGoods();
 }
 
 void Harbor::handleInput(int key)
 {
-    int menuPos = menuHandler::handleInput(key, options.size());
+    std::tuple<int, int> menuPos;
+    int posY;
 
-    if (key == KEY_SPACE)
-        setState(menuPos);
-    else
-        menuHandler::setCursor(options[menuPos]);
+    menuPos = menuHandler::handleInput(options, key, minLine, options.size() + minLine);
+    posY = std::get<1>(menuPos);
+
+    if (key == KEY_SPACE && currentState != HarborStates::TRADING)
+    {
+        setState(posY);
+        menuHandler::resetCursor();
+    }
 
     switch (currentState)
     {
-        case HarborStates::TRADING:
+        case HarborStates::GOODS:
             displayShop();
             break;
         case HarborStates::CANONS:
@@ -49,8 +44,41 @@ void Harbor::handleInput(int key)
             break;
         case HarborStates::MENU:
             break;
+        case HarborStates::TRADING:
+            if (key == KEY_B)
+            {
+                buyItem(posY);
+                displayShop();
+            } else if (key == KEY_S)
+            {
+                sellItem(posY);
+                displayShop();
+            } else if (key == KEY_BACKSPACE)
+            {
+                displayMenu();
+                setState(HarborStates::MENU);
+            }
+            break;
     }
+}
 
+void Harbor::displayMenu()
+{
+    system("cls");
+    minLine = 0;
+    menu =
+            {
+                    "1. Trade goods",
+                    "2. Trade canons",
+                    "3. Trade ships",
+                    "4. Leave harbor",
+                    "5. Repair ship",
+                    "6. Quit game"
+            };
+
+    setOptions(menu);
+    menuHandler::resetCursor();
+    showOptions();
 }
 
 void Harbor::generateGoods()
@@ -74,6 +102,15 @@ void Harbor::displayShop()
 {
     system("cls");
     options.clear();
+    menuHandler::resetCursor();
+
+    //display information and set the minline to 5 so it skips these in selection
+    std::cout << "Welcome to the " << name << " market" << std::endl
+              << "You can buy items by pressing B, and sell them by pressing S" << std::endl << std::endl
+              << "You currently have " << 100 << " gold" << " and room for " << 100 << " goods" << std::endl
+              << std::endl;
+    minLine = 5;
+
 
     for (const auto &product: goods)
     {
@@ -87,10 +124,81 @@ void Harbor::displayShop()
     }
 
     this->showOptions();
-    setState(6);
+    setState(HarborStates::TRADING);
 }
 
-void Harbor::setState(int number)
+template<typename T>
+void Harbor::setState(T state)
 {
-    currentState = HarborStates(number);
+    currentState = HarborStates(state);
+}
+
+void Harbor::buyItem(int y)
+{
+    auto &item = goods[y];
+    int gold{1000};
+    int space{60};
+    int amount;
+
+    system("cls");
+    std::cout << "Ah, you want to buy " + std::get<0>(item) << "?" << std::endl
+              << "This will cost you " + std::to_string(std::get<2>(item)) << " gold each" << std::endl << std::endl
+              << "How many do you wish to buy?" << std::endl
+              << "Amount to buy: ";
+    amount = menuHandler::getInput();
+
+    int totalCost = amount * std::get<2>(item);
+    while (totalCost > gold || amount > space)
+    {
+        if (amount > space)
+            std::cout << "Your ship does not have enough room for this purchase, try again.";
+        else
+            std::cout << "You do not have enough gold for this purchase, try again.";
+
+        amount = menuHandler::getInput();
+        totalCost = amount * std::get<2>(item);
+    }
+
+    if (amount != 0)
+    {
+        gold -= totalCost;
+        space -= amount;
+        std::get<1>(item) -= amount;
+        std::cout << std::endl << "You bought " << amount << " " << std::get<0>(item)
+                  << " for a total of " << totalCost << " gold" << std::endl << std::endl;
+        system("pause");
+    }
+}
+
+void Harbor::sellItem(int y)
+{
+    auto &item = goods[y];
+    int gold{1000};
+    int space{60};
+    int has{6};
+    int amount;
+
+    system("cls");
+    std::cout << "Yeah, we buy " + std::get<0>(item) << std::endl << "How many do you wish to sell?" << std::endl
+              << std::endl << "Amount to sell: ";
+    amount = menuHandler::getInput();
+
+    int totalEarned = amount * std::get<2>(item);
+    while (amount > has)
+    {
+        std::cout << "Are you trying to cheat me? you only have " << has << "of this item" << std::endl;
+        amount = menuHandler::getInput();
+        totalEarned = amount * std::get<2>(item);
+    }
+
+    if (amount != 0)
+    {
+        gold += totalEarned;
+        space += amount;
+        has -= amount;
+        std::get<1>(item) += 1;
+        std::cout << std::endl << "You sold " << amount << " " << std::get<0>(item)
+                  << " for a total of " << totalEarned << " gold" << std::endl << std::endl;
+        system("pause");
+    }
 }
