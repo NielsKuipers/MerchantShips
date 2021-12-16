@@ -13,6 +13,16 @@ int Game::play()
     while (playing)
     {
         handleInput(_getch());
+
+        switch (ship.getState())
+        {
+            case ShipState::BOUGHT:
+                break;
+            case ShipState::SOLD:
+                break;
+            case ShipState::DEAD:
+                break;
+        }
     }
 
     return 1;
@@ -21,8 +31,17 @@ int Game::play()
 Game::Game()
 {
     DB::connect();
+
+    const auto randomShip{DB::selectData(
+            "SELECT s.type, s.prijs, s.laadruimte, s.kanonnen, s.schadepunten, "
+            "(SELECT bijzonderheid FROM bijzonderheden b WHERE b.id = sb.bijzonderheid_id) "
+            "FROM schepen s INNER JOIN schepen_bijzonderheden sb on s.id = sb.schip_id ORDER BY random() LIMIT 1")[0]};
+    const auto randomGold {RNG::generateRandomNumber(100000, 250000)};
+    ship = Ship{randomShip[0], std::stoi(randomShip[1]), std::stoi(randomShip[2]), std::stoi(randomShip[3]),
+                std::stoi(randomShip[4]), randomShip[5], randomGold};
+
     const auto randomHarbor{DB::selectData("SELECT id, haven FROM havens ORDER BY RANDOM() LIMIT 1")[0]};
-    changeLocation(Harbor{std::stoi(randomHarbor[0]), randomHarbor[1]});
+    changeLocation(Harbor{std::stoi(randomHarbor[0]), randomHarbor[1], ship});
 
     playing = true;
 

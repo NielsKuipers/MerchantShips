@@ -4,7 +4,7 @@
 
 #include "harbor/Harbor.h"
 
-Harbor::Harbor(int id, const std::string &name)
+Harbor::Harbor(int id, const std::string &name, Ship &ship) : ship(ship)
 {
     this->id = id;
     this->name = name;
@@ -107,7 +107,8 @@ void Harbor::displayShop()
     //display information and set the minline to 5 so it skips these in selection
     std::cout << "Welcome to the " << name << " market" << std::endl
               << "You can buy items by pressing B, and sell them by pressing S" << std::endl << std::endl
-              << "You currently have " << 100 << " gold" << " and room for " << 100 << " goods" << std::endl
+              << "You currently have " << ship.getGold() << " gold" << " and room for " << ship.getCargoSpace()
+              << " goods" << std::endl
               << std::endl;
     minLine = 5;
 
@@ -115,9 +116,10 @@ void Harbor::displayShop()
     for (const auto &product: goods)
     {
         const std::string line{
-                std::get<0>(product) + " amount available: " +
-                std::to_string(std::get<1>(product)) + " price: " +
-                std::to_string(std::get<2>(product))
+                "Product: " + std::get<0>(product) +
+                " amount available: " + std::to_string(std::get<1>(product)) +
+                " price: " + std::to_string(std::get<2>(product)) +
+                " You have: " + std::to_string(ship.getItemAmount(std::get<0>(product)))
         };
 
         options.emplace_back(line);
@@ -136,8 +138,8 @@ void Harbor::setState(T state)
 void Harbor::buyItem(int y)
 {
     auto &item = goods[y];
-    int gold{1000};
-    int space{60};
+    int gold{ship.getGold()};
+    int space{ship.getCargoSpace()};
     int amount;
 
     system("cls");
@@ -161,8 +163,7 @@ void Harbor::buyItem(int y)
 
     if (amount != 0)
     {
-        gold -= totalCost;
-        space -= amount;
+        ship.boughtItem(std::get<0>(item), amount, totalCost);
         std::get<1>(item) -= amount;
         std::cout << std::endl << "You bought " << amount << " " << std::get<0>(item)
                   << " for a total of " << totalCost << " gold" << std::endl << std::endl;
@@ -173,9 +174,7 @@ void Harbor::buyItem(int y)
 void Harbor::sellItem(int y)
 {
     auto &item = goods[y];
-    int gold{1000};
-    int space{60};
-    int has{6};
+    int has{ship.getItemAmount(std::get<0>(item))};
     int amount;
 
     system("cls");
@@ -193,9 +192,8 @@ void Harbor::sellItem(int y)
 
     if (amount != 0)
     {
-        gold += totalEarned;
-        space += amount;
-        has -= amount;
+        ship.soldItem(std::get<0>(item), amount, totalEarned);
+
         std::get<1>(item) += 1;
         std::cout << std::endl << "You sold " << amount << " " << std::get<0>(item)
                   << " for a total of " << totalEarned << " gold" << std::endl << std::endl;

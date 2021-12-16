@@ -14,6 +14,7 @@
 #include <map>
 #include <optional>
 #include "ship/Ship.h"
+#include <variant>
 
 class Harbor : public Place
 {
@@ -25,7 +26,7 @@ class Harbor : public Place
     std::vector<std::string> menu;
     std::vector<std::tuple<std::string, int, int>> goods{};
     HarborStates currentState{HarborStates::MENU};
-    std::optional<Ship> currentShip{std::nullopt};
+    Ship &ship;
 
     void generateGoods();
 
@@ -39,7 +40,7 @@ class Harbor : public Place
     void sellItem(int y);
 
 public:
-    Harbor(int id, const std::string &name);
+    Harbor(int id, const std::string &name, Ship &ship);
 
     void displayMenu();
 };

@@ -14,15 +14,17 @@
 class Game
 {
     bool playing{false};
-    Ship *ship;
+    Ship ship;
     std::unique_ptr<Place> currentLocation;
 
     void handleInput(int key) const;
 
     template<typename T>
     void changeLocation(T location);
+
 public:
     int play();
+
     Game();
 };
 
