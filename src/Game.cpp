@@ -13,16 +13,6 @@ int Game::play()
     while (playing)
     {
         handleInput(_getch());
-
-        switch (ship.getState())
-        {
-            case ShipState::BOUGHT:
-                break;
-            case ShipState::SOLD:
-                break;
-            case ShipState::DEAD:
-                break;
-        }
     }
 
     return 1;

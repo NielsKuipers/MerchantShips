@@ -14,7 +14,6 @@
 #include <map>
 #include <optional>
 #include "ship/Ship.h"
-#include <variant>
 
 class Harbor : public Place
 {
@@ -25,6 +24,8 @@ class Harbor : public Place
     int minLine{0};
     std::vector<std::string> menu;
     std::vector<std::tuple<std::string, int, int>> goods{};
+    std::vector<std::tuple<std::string, int, int>> canons{};
+    HarborStates currentShop;
     HarborStates currentState{HarborStates::MENU};
     Ship &ship;
 
@@ -43,6 +44,7 @@ public:
     Harbor(int id, const std::string &name, Ship &ship);
 
     void displayMenu();
+
 };
 
 

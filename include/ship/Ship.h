@@ -8,7 +8,6 @@
 #include <string>
 #include <map>
 #include "CanonTypes.h"
-#include "ShipStates.h"
 
 class Ship
 {
@@ -21,7 +20,6 @@ class Ship
     std::string ability;
     std::map<CanonType, int> canons;
     std::map<std::string, int> goods;
-    ShipState currentState;
 public:
     Ship(const std::string &type, int price, int cargo, int canons, int health, const std::string &ability, int gold);
 
@@ -47,9 +45,6 @@ public:
 
     const std::map<CanonType, int> &getCanons() const
     { return this->canons; };
-
-    const ShipState getState() const
-    { return this->currentState; };
 
     int getGold() const
     { return this->currentGold; };

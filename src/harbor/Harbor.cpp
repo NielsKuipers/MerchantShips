@@ -30,9 +30,12 @@ void Harbor::handleInput(int key)
     switch (currentState)
     {
         case HarborStates::GOODS:
+            currentShop = currentState;
             displayShop();
             break;
         case HarborStates::CANONS:
+            currentShop = currentState;
+            displayShop();
             break;
         case HarborStates::SHIPS:
             break;
@@ -88,6 +91,10 @@ void Harbor::generateGoods()
             "FROM havens_goederen g INNER JOIN goederen g2 on g.goed_id = g2.id "
             "WHERE g.haven_id = " + std::to_string(id))};
 
+    canons.emplace_back(std::make_tuple("small", RNG::generateRandomNumber(0, 5), 50));
+    canons.emplace_back(std::make_tuple("medium", RNG::generateRandomNumber(0, 3), 200));
+    canons.emplace_back(std::make_tuple("large", RNG::generateRandomNumber(0, 2), 1000));
+
     for (const auto &productData: goodsData)
     {
         const int amount{RNG::generateRandomNumber(std::stoi(productData[1]), std::stoi(productData[2]))};
@@ -103,6 +110,7 @@ void Harbor::displayShop()
     system("cls");
     options.clear();
     menuHandler::resetCursor();
+    const auto &items{(currentShop == HarborStates::GOODS) ? goods : canons};
 
     //display information and set the minline to 5 so it skips these in selection
     std::cout << "Welcome to the " << name << " market" << std::endl
@@ -112,8 +120,7 @@ void Harbor::displayShop()
               << std::endl;
     minLine = 5;
 
-
-    for (const auto &product: goods)
+    for (const auto &product: items)
     {
         const std::string line{
                 "Product: " + std::get<0>(product) +
@@ -137,9 +144,9 @@ void Harbor::setState(T state)
 
 void Harbor::buyItem(int y)
 {
-    auto &item = goods[y];
+    auto &item{currentShop == HarborStates::GOODS ? goods[y] : canons[y]};
     int gold{ship.getGold()};
-    int space{ship.getCargoSpace()};
+    int space{currentShop == HarborStates::GOODS ? ship.getCargoSpace() : ship.getCanonSpace()};
     int amount;
 
     system("cls");
@@ -153,10 +160,11 @@ void Harbor::buyItem(int y)
     while (totalCost > gold || amount > space)
     {
         if (amount > space)
-            std::cout << "Your ship does not have enough room for this purchase, try again.";
+            std::cout << std::endl << "Your ship does not have enough room for this purchase, try again." << std::endl;
         else
-            std::cout << "You do not have enough gold for this purchase, try again.";
+            std::cout << std::endl << "You do not have enough gold for this purchase, try again." << std::endl;
 
+        std::cout << "Amount to buy: ";
         amount = menuHandler::getInput();
         totalCost = amount * std::get<2>(item);
     }
@@ -173,7 +181,7 @@ void Harbor::buyItem(int y)
 
 void Harbor::sellItem(int y)
 {
-    auto &item = goods[y];
+    auto &item{currentShop == HarborStates::GOODS ? goods[y] : canons[y]};
     int has{ship.getItemAmount(std::get<0>(item))};
     int amount;
 
@@ -185,7 +193,8 @@ void Harbor::sellItem(int y)
     int totalEarned = amount * std::get<2>(item);
     while (amount > has)
     {
-        std::cout << "Are you trying to cheat me? you only have " << has << "of this item" << std::endl;
+        std::cout << std::endl << "Are you trying to cheat me? you only have " << has << " of this item" << std::endl;
+        std::cout << "Amount to sell: ";
         amount = menuHandler::getInput();
         totalEarned = amount * std::get<2>(item);
     }
