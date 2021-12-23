@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-nodiscard"
 //
 // Created by Niels on 11/12/21.
 //
@@ -7,18 +9,20 @@
 
 #include <string>
 #include <map>
-#include "CanonTypes.h"
+#include <vector>
 
 class Ship
 {
     std::string type;
     int price{};
     int cargoSpace{};
+    int cargoSpaceInUse{};
     int canonSpace{};
+    int canonSpaceInUse{};
     int health{};
     int currentGold{};
     std::string ability;
-    std::map<CanonType, int> canons;
+    std::map<std::string, int> canons;
     std::map<std::string, int> goods;
 public:
     Ship(const std::string &type, int price, int cargo, int canons, int health, const std::string &ability, int gold);
@@ -32,10 +36,16 @@ public:
     { return this->price; };
 
     int getCargoSpace() const
-    { return this->cargoSpace; };
+    { return (cargoSpace - cargoSpaceInUse); };
 
     int getCanonSpace() const
-    { return this->cargoSpace; };
+    { return (canonSpace - canonSpaceInUse); };
+
+    int getTotalCargo() const
+    { return this->cargoSpaceInUse; }
+
+    int getTotalCanons() const
+    { return this->canonSpaceInUse; }
 
     int getHealth() const
     { return this->health; };
@@ -43,8 +53,11 @@ public:
     const std::string &getAbility() const
     { return this->ability; };
 
-    const std::map<CanonType, int> &getCanons() const
+    const std::map<std::string, int> &getCanons() const
     { return this->canons; };
+
+    const std::map<std::string, int> &getGoods() const
+    { return this->goods; };
 
     int getGold() const
     { return this->currentGold; };
@@ -54,6 +67,15 @@ public:
     void soldItem(const std::string &item, int amount, int earned);
 
     void boughtItem(const std::string &item, int amount, int spent);
+
+    void changeShip(std::tuple<std::string, int, int, int, int, std::string> &tuple);
+
+    void boughtCanon(const std::string& canonType, int amount, int spent);
+
+    void soldCanon(const std::string &canonType, int amount, int earned);
+
+    int displayShipInfo() const;
 };
 
 #endif //MERCHANTSHIPS_SHIP_H
+#pragma clang diagnostic pop

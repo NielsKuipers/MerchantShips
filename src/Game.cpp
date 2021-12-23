@@ -22,6 +22,7 @@ Game::Game()
 {
     DB::connect();
 
+    //generate a random ship with a random amount of gold
     const auto randomShip{DB::selectData(
             "SELECT s.type, s.prijs, s.laadruimte, s.kanonnen, s.schadepunten, "
             "(SELECT bijzonderheid FROM bijzonderheden b WHERE b.id = sb.bijzonderheid_id) "
@@ -30,6 +31,7 @@ Game::Game()
     ship = Ship{randomShip[0], std::stoi(randomShip[1]), std::stoi(randomShip[2]), std::stoi(randomShip[3]),
                 std::stoi(randomShip[4]), randomShip[5], randomGold};
 
+    //generate a random harbor
     const auto randomHarbor{DB::selectData("SELECT id, haven FROM havens ORDER BY RANDOM() LIMIT 1")[0]};
     changeLocation(Harbor{std::stoi(randomHarbor[0]), randomHarbor[1], ship});
 
@@ -55,5 +57,5 @@ template<typename T>
 void Game::changeLocation(T location)
 {
     currentLocation = std::make_unique<T>(location);
-    menuHandler::setCursor(currentLocation->getOptions()[0], 0, 0);
+    menuHandler::resetCursor();
 }

@@ -80,7 +80,7 @@ namespace menuHandler
         return std::make_tuple(posX, (posY - min));
     }
 
-    static int getInput()
+    static int getNumberInput()
     {
         int result;
 
@@ -90,6 +90,23 @@ namespace menuHandler
             std::cin.clear();
             std::cin.ignore(1000, '\n');
             std::cout << "What are you saying? that's not a number, try again.";
+            std::cin >> result;
+        }
+
+        return result;
+    }
+
+    static std::string getConfirmInput()
+    {
+        std::string result;
+
+        std::cout << "Are you sure? y/n: ";
+        std::cin >> result;
+        while(!std::cin.good() || (result != "y" && result != "n"))
+        {
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+            std::cout << "Uhm... It's a simple yes or no answer, try again.";
             std::cin >> result;
         }
 
