@@ -13,6 +13,7 @@
 #include <harbor/HarborStates.h>
 #include <map>
 #include <optional>
+#include <../exceptions/QuitGame.h>
 #include "ship/Ship.h"
 
 class Harbor : public Place

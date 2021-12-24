@@ -10,6 +10,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <game/menuHandler.h>
 
 class Ship
 {
@@ -19,6 +20,7 @@ class Ship
     int cargoSpaceInUse{};
     int canonSpace{};
     int canonSpaceInUse{};
+    int maxHealth{};
     int health{};
     int currentGold{};
     std::string ability;
@@ -47,8 +49,11 @@ public:
     int getTotalCanons() const
     { return this->canonSpaceInUse; }
 
-    int getHealth() const
-    { return this->health; };
+    int getMaxHealth() const
+    { return this->maxHealth; };
+
+    int getCurrentHealth() const
+    { return this->health; }
 
     const std::string &getAbility() const
     { return this->ability; };
@@ -75,6 +80,10 @@ public:
     void soldCanon(const std::string &canonType, int amount, int earned);
 
     int displayShipInfo() const;
+
+    void repair();
+
+    void takeDamage(int dmg);
 };
 
 #endif //MERCHANTSHIPS_SHIP_H

@@ -11,7 +11,7 @@ Ship::Ship(const std::string &type, int price, int cargo, int canons, int health
     this->price = price;
     this->cargoSpace = cargo;
     this->canonSpace = canons;
-    this->health = health;
+    this->health = maxHealth = health;
     this->ability = ability;
     this->currentGold = gold;
 }
@@ -126,5 +126,47 @@ int Ship::displayShipInfo() const
               << std::endl;
 
     return 4;
+}
+
+void Ship::repair()
+{
+    system("cls");
+
+    if (health == maxHealth)
+    {
+        std::cout << "Your ship does not need any repairs right now." << std::endl << std::endl;
+        system("pause");
+        return;
+    }
+
+    std::cout << "Yeah, we can repair your ship... it'll cost you 1 gold per 10 damage."
+              << std::endl << "Your current health is " << health << "/" << maxHealth
+              << std::endl << "How many repairs would you like to do?"
+              << std::endl << std::endl << "Number of repairs: ";
+
+    auto amount{menuHandler::getNumberInput()};
+    while (currentGold < (amount * 10) || (amount * 10 + health) > maxHealth)
+    {
+        if (currentGold < (amount * 10))
+            std::cout << "You do not have enough gold for these repairs, try again." << std::endl;
+        else
+            std::cout << "We cannot repair your ship more than it has health, try again." << std::endl;
+
+        std::cout << "Number of repairs: ";
+        amount = menuHandler::getNumberInput();
+    }
+
+    if (amount != 0)
+    {
+        health += (amount * 10);
+        currentGold -= (amount);
+        std::cout << std::endl << "Your ship has been repaired for " << (amount * 10) << " health!";
+        system("pause");
+    }
+}
+
+void Ship::takeDamage(int dmg)
+{
+    health -= dmg;
 }
 

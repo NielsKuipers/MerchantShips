@@ -10,9 +10,15 @@ int Game::play()
 //                   "FROM afstanden a INNER JOIN havens h on h.id = a.haven2_id "
 //                   "WHERE haven1_id in (10) OR haven2_id in (10) AND haven1_id < haven2_id");
 
-    while (playing)
+
+    try
     {
-        handleInput(_getch());
+        while (playing)
+            handleInput(_getch());
+    }
+    catch(const std::exception &e)
+    {
+        return EXIT_SUCCESS;
     }
 
     return 1;
@@ -27,9 +33,10 @@ Game::Game()
             "SELECT s.type, s.prijs, s.laadruimte, s.kanonnen, s.schadepunten, "
             "(SELECT bijzonderheid FROM bijzonderheden b WHERE b.id = sb.bijzonderheid_id) "
             "FROM schepen s INNER JOIN schepen_bijzonderheden sb on s.id = sb.schip_id ORDER BY random() LIMIT 1")[0]};
-    const auto randomGold {RNG::generateRandomNumber(100000, 250000)};
+    const auto randomGold{RNG::generateRandomNumber(100000, 250000)};
     ship = Ship{randomShip[0], std::stoi(randomShip[1]), std::stoi(randomShip[2]), std::stoi(randomShip[3]),
                 std::stoi(randomShip[4]), randomShip[5], randomGold};
+    ship.takeDamage(50);
 
     //generate a random harbor
     const auto randomHarbor{DB::selectData("SELECT id, haven FROM havens ORDER BY RANDOM() LIMIT 1")[0]};

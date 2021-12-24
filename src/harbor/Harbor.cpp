@@ -44,8 +44,12 @@ void Harbor::handleInput(int key)
         case HarborStates::LEAVING:
             break;
         case HarborStates::REPAIRING:
+            ship.repair();
+            displayMenu();
+            setState(HarborStates::MENU);
             break;
         case HarborStates::QUIT:
+            throw QuitGame(-EINVAL, "Quit the game successfully");
             break;
         case HarborStates::MENU:
             break;
