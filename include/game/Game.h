@@ -8,6 +8,7 @@
 #include <harbor/Harbor.h>
 #include <ship/Ship.h>
 #include "DBManager.h"
+#include "sea/Sea.h"
 #include <conio.h>
 #include <iomanip>
 

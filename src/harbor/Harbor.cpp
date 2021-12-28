@@ -11,6 +11,7 @@ Harbor::Harbor(int id, const std::string &name, Ship &ship) : ship(ship)
 
     displayMenu();
     generateGoods();
+    getLocations();
 }
 
 void Harbor::handleInput(int key)
@@ -21,7 +22,7 @@ void Harbor::handleInput(int key)
     menuPos = menuHandler::handleInput(options, key, minLine, options.size() + minLine);
     posY = std::get<1>(menuPos);
 
-    if ((currentState != HarborStates::TRADING && currentState != HarborStates::TRADING_SHIP) && key == KEY_SPACE)
+    if ((currentState == HarborStates::MENU) && key == KEY_SPACE)
     {
         setState(posY);
         menuHandler::resetCursor();
@@ -41,7 +42,8 @@ void Harbor::handleInput(int key)
             currentShop = currentState;
             displayShips();
             break;
-        case HarborStates::LEAVING:
+        case HarborStates::MAP:
+            displayDestinations();
             break;
         case HarborStates::REPAIRING:
             ship.repair();
@@ -73,6 +75,12 @@ void Harbor::handleInput(int key)
             } else if (key == KEY_BACKSPACE)
                 displayMenu();
             break;
+        case HarborStates::LEAVING:
+            if (key == KEY_SPACE)
+                leaveHarbor(posY);
+            else if (key == KEY_BACKSPACE)
+                displayMenu();
+            break;
     }
 }
 
@@ -80,6 +88,9 @@ void Harbor::displayMenu()
 {
     system("cls");
     minLine = ship.displayShipInfo();
+    std::cout << "Welcome to the " << name << " habor!" << std::endl;
+    ++minLine;
+
     menu =
             {
                     "1. Trade goods",
@@ -312,8 +323,66 @@ void Harbor::buyShip(int y)
     if (result == "y")
     {
         ship.changeShip(item);
-        std::cout << std::endl << "You have successfully bought the " << std::get<0>(item) << "!" << std::endl << std::endl;
+        std::cout << std::endl << "You have successfully bought the " << std::get<0>(item) << "!" << std::endl
+                  << std::endl;
         system("pause");
     } else
         return;
+}
+
+void Harbor::getLocations()
+{
+    const auto locationData{DB::selectData(
+            "SELECT (SELECT haven FROM havens WHERE haven1_id=havens.id), a.haven1_id, h.haven, a.haven2_id, a.afstand "
+            "FROM afstanden a INNER JOIN havens h on h.id = a.haven2_id "
+            "WHERE haven1_id in (" + std::to_string(id) + ") OR haven2_id in (" + std::to_string(id) +
+            ") AND haven1_id < haven2_id")};
+
+    for (const auto &location: locationData)
+    {
+        std::string destination;
+        int locationId;
+
+        if (location[0] == name)
+        {
+            destination = location[2];
+            locationId = std::stoi(location[3]);
+        } else
+        {
+            destination = location[0];
+            locationId = std::stoi(location[1]);
+        }
+
+        locations.emplace_back(std::make_tuple(locationId, destination, std::stoi(location[4])));
+    }
+}
+
+void Harbor::displayDestinations()
+{
+    system("cls");
+    options.clear();
+    menuHandler::resetCursor();
+
+    std::cout << "You take a look at the map and find some suitable locations to sail to" << std::endl
+              << std::endl;
+    minLine = 2;
+
+    for (const auto &locationData: locations)
+    {
+        const std::string line{
+                "Location: " + std::get<1>(locationData) +
+                " Distance: " + std::to_string(std::get<2>(locationData))
+        };
+
+        options.emplace_back(line);
+    }
+
+    this->showOptions();
+    setState(HarborStates::LEAVING);
+}
+
+void Harbor::leaveHarbor(int y)
+{
+    ship.setDestionation(locations[y]);
+    ship.setState(ShipStates::LEAVING);
 }

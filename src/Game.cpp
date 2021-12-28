@@ -6,15 +6,17 @@
 
 int Game::play()
 {
-//    DB::selectData("SELECT (SELECT haven FROM havens WHERE haven1_id=havens.id), h.haven, a.afstand "
-//                   "FROM afstanden a INNER JOIN havens h on h.id = a.haven2_id "
-//                   "WHERE haven1_id in (10) OR haven2_id in (10) AND haven1_id < haven2_id");
-
-
     try
     {
         while (playing)
+        {
             handleInput(_getch());
+            if(ship.getState() == ShipStates::LEAVING)
+            {
+                auto s {std::make_unique<Sea>()};
+                changeLocation(std::move(s));
+            }
+        }
     }
     catch(const std::exception &e)
     {
@@ -36,11 +38,11 @@ Game::Game()
     const auto randomGold{RNG::generateRandomNumber(100000, 250000)};
     ship = Ship{randomShip[0], std::stoi(randomShip[1]), std::stoi(randomShip[2]), std::stoi(randomShip[3]),
                 std::stoi(randomShip[4]), randomShip[5], randomGold};
-    ship.takeDamage(50);
 
     //generate a random harbor
     const auto randomHarbor{DB::selectData("SELECT id, haven FROM havens ORDER BY RANDOM() LIMIT 1")[0]};
-    changeLocation(Harbor{std::stoi(randomHarbor[0]), randomHarbor[1], ship});
+    std::unique_ptr<Place> harbor(new Harbor(std::stoi(randomHarbor[0]), randomHarbor[1], ship));
+    changeLocation(std::move(harbor));
 
     playing = true;
 
@@ -63,6 +65,6 @@ void Game::handleInput(int key) const
 template<typename T>
 void Game::changeLocation(T location)
 {
-    currentLocation = std::make_unique<T>(location);
+    currentLocation = move(location);
     menuHandler::resetCursor();
 }

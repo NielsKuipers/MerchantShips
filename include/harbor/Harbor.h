@@ -27,6 +27,7 @@ class Harbor : public Place
     std::vector<std::tuple<std::string, int, int>> goods{};
     std::vector<std::tuple<std::string, int, int>> canons{};
     std::vector<std::tuple<std::string, int, int, int, int, std::string>> ships{};
+    std::vector<std::tuple<int, std::string, int>> locations{};
     HarborStates currentShop;
     HarborStates currentState;
     Ship &ship;
@@ -45,6 +46,12 @@ class Harbor : public Place
     void displayShips();
 
     void buyShip(int y);
+
+    void getLocations();
+
+    void displayDestinations();
+
+    void leaveHarbor(int y);
 
 public:
     Harbor(int id, const std::string &name, Ship &ship);

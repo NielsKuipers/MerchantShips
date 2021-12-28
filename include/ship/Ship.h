@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-use-nodiscard"
 //
 // Created by Niels on 11/12/21.
 //
@@ -11,6 +9,7 @@
 #include <map>
 #include <vector>
 #include <game/menuHandler.h>
+#include "ShipStates.h"
 
 class Ship
 {
@@ -26,6 +25,8 @@ class Ship
     std::string ability;
     std::map<std::string, int> canons;
     std::map<std::string, int> goods;
+    std::tuple<int, std::string, int> destionation;
+    ShipStates currentState{ShipStates::DEFAULT};
 public:
     Ship(const std::string &type, int price, int cargo, int canons, int health, const std::string &ability, int gold);
 
@@ -64,6 +65,15 @@ public:
     const std::map<std::string, int> &getGoods() const
     { return this->goods; };
 
+    void setDestionation(std::tuple<int, std::string, int> &destination)
+    { this->destionation = destination; }
+
+    void setState(ShipStates state)
+    { this->currentState = state; }
+
+    const ShipStates &getState() const
+    { return this->currentState; }
+
     int getGold() const
     { return this->currentGold; };
 
@@ -75,7 +85,7 @@ public:
 
     void changeShip(std::tuple<std::string, int, int, int, int, std::string> &tuple);
 
-    void boughtCanon(const std::string& canonType, int amount, int spent);
+    void boughtCanon(const std::string &canonType, int amount, int spent);
 
     void soldCanon(const std::string &canonType, int amount, int earned);
 
@@ -87,4 +97,3 @@ public:
 };
 
 #endif //MERCHANTSHIPS_SHIP_H
-#pragma clang diagnostic pop

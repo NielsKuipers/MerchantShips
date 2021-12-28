@@ -119,9 +119,10 @@ void Ship::changeShip(std::tuple<std::string, int, int, int, int, std::string> &
 int Ship::displayShipInfo() const
 {
     std::cout << "Your current ship is a " << type << " of type " << ability << " worth " << price << " gold."
-              << std::endl << "Its current health is " << health << " and you have " << currentGold << " gold."
-              << std::endl << "It currently has " << cargoSpaceInUse << " goods" << " and " << canonSpaceInUse
-              << " canons."
+              << std::endl << "Its current health is " << health << "/" << maxHealth << " and you have " << currentGold
+              << " gold."
+              << std::endl << "It currently has " << cargoSpaceInUse << "/" << cargoSpace << " goods"
+              << " and " << canonSpaceInUse << "/" << canonSpace << " canons."
               << std::endl
               << std::endl;
 

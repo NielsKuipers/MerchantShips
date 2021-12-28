@@ -3,3 +3,8 @@
 //
 
 #include "sea/Sea.h"
+
+void Sea::handleInput(int key)
+{
+
+}

@@ -6,9 +6,14 @@
 #define MERCHANTSHIPS_SEA_H
 
 
-class Sea
-{
+#include "interface/Place.h"
 
+class Sea : public Place
+{
+    void handleInput(int key) override;
+
+public:
+    Sea() = default;
 };
 
 
