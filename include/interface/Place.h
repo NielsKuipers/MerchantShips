@@ -29,6 +29,7 @@ public:
 
 protected:
     std::vector<std::string> options{};
+    int minLine{0};
 };
 
 #endif //MERCHANTSHIPS_PLACE_H

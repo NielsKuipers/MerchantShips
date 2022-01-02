@@ -7,7 +7,7 @@
 
 enum class ShipStates
 {
-    DEFAULT, LEAVING, DEAD
+    DEFAULT, LEAVING, SAILING, COMBAT, DEAD
 };
 
 #endif //MERCHANTSHIPS_SHIPSTATES_H

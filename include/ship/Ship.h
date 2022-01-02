@@ -25,7 +25,7 @@ class Ship
     std::string ability;
     std::map<std::string, int> canons;
     std::map<std::string, int> goods;
-    std::tuple<int, std::string, int> destionation;
+    std::tuple<int, std::string, int> destination;
     ShipStates currentState{ShipStates::DEFAULT};
 public:
     Ship(const std::string &type, int price, int cargo, int canons, int health, const std::string &ability, int gold);
@@ -65,8 +65,11 @@ public:
     const std::map<std::string, int> &getGoods() const
     { return this->goods; };
 
-    void setDestionation(std::tuple<int, std::string, int> &destination)
-    { this->destionation = destination; }
+    void setDestination(std::tuple<int, std::string, int> &newDestination)
+    { this->destination = newDestination; }
+
+    const std::tuple<int, std::string, int> &getDestination() const
+    { return this->destination; }
 
     void setState(ShipStates state)
     { this->currentState = state; }

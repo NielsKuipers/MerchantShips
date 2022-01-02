@@ -13,8 +13,9 @@ int Game::play()
             handleInput(_getch());
             if(ship.getState() == ShipStates::LEAVING)
             {
-                auto s {std::make_unique<Sea>()};
+                auto s {std::make_unique<Sea>(ship.getDestination(), ship)};
                 changeLocation(std::move(s));
+                ship.setState(ShipStates::SAILING);
             }
         }
     }

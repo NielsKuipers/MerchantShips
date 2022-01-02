@@ -22,7 +22,6 @@ class Harbor : public Place
 
     int id;
     std::string name;
-    int minLine{0};
     std::vector<std::string> menu;
     std::vector<std::tuple<std::string, int, int>> goods{};
     std::vector<std::tuple<std::string, int, int>> canons{};

@@ -383,6 +383,7 @@ void Harbor::displayDestinations()
 
 void Harbor::leaveHarbor(int y)
 {
-    ship.setDestionation(locations[y]);
+    ship.setDestination(locations[y]);
     ship.setState(ShipStates::LEAVING);
+    system("cls");
 }
