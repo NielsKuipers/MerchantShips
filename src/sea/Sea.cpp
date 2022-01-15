@@ -4,6 +4,7 @@
 
 #include "sea/Sea.h"
 #include "game/DBManager.h"
+#include "../../exceptions/QuitGame.h"
 
 void Sea::handleInput(int key)
 {
@@ -32,15 +33,15 @@ Sea::Sea(std::tuple<int, std::string, int> dest, Ship &ship) : ship(ship), desti
 void Sea::playRound()
 {
     int encounter{RNG::generateRandomNumber(4)};
-    if (encounter <= 4)
+    if (encounter == 0)
     {
         ship.setState(ShipStates::COMBAT);
         pirateShip = generatePirateShip();
         system("cls");
         menuHandler::resetCursor();
         std::cout << "A pirate ship has engaged you in combat!" << std::endl
-        << "it looks like it has about " << pirateShip->getTotalCanons() << " canons" << std::endl
-        <<  "What would you like to do?" << std::endl << std::endl;
+                  << "it looks like it has about " << pirateShip->getTotalCanons() << " canons" << std::endl
+                  << "What would you like to do?" << std::endl << std::endl;
 
         showOptions();
         minLine += 4;
@@ -65,6 +66,14 @@ void Sea::playRound()
 
     std::get<2>(destination) -= movement;
     std::cout << "The current wind causes you to move " << movement << " miles" << std::endl;
+
+    if (std::get<2>(destination) <= 0)
+    {
+        std::cout << "You can see the harbor approaching in the distance" << std::endl
+                  << "You have arrived at your location!" << std::endl;
+        ship.setState(ShipStates::ARRIVING);
+    }
+
     system("pause");
 }
 
@@ -94,7 +103,90 @@ int Sea::handleStorm()
 
 void Sea::handleCombat(int key)
 {
+    menuHandler::setCursorForText(0, minLine + options.size() + 1);
+    menuHandler::deleteLines(7, 100);
 
+    //surrender
+    if (key == 2)
+    {
+        int amountStolen{0};
+        std::string result{"The pirateship stole "};
+
+        if ((ship.getTotalCargo() - pirateShip->getCargoSpace()) > 0)
+        {
+            amountStolen += pirateShip->getCargoSpace();
+            result += (std::to_string(amountStolen) + " goods and threw the rest of your cargo overboard!");
+        } else
+        {
+            amountStolen += ship.getTotalCargo();
+            result += (std::to_string(amountStolen) + " goods!");
+        }
+
+        std::cout << result << std::endl << "You get away safely" << std::endl;
+        ship.removeCargo();
+
+        endCombat();
+        return;
+    }
+
+    const int dmgDone{getDamage(ship.getCanons())};
+    const int dmgTaken{getDamage(pirateShip->getCanons())};
+
+    //attacking ship
+    if (key == 0)
+    {
+        std::cout << "You shoot at the enemy ship and hit it for " << dmgDone << " damage!" << std::endl
+        << "It has " << pirateShip->getCurrentHealth() << " health left" << std::endl << std::endl;
+        pirateShip->takeDamage(dmgDone);
+        if (pirateShip->getCurrentHealth() <= 0)
+        {
+            std::cout << "the enemy ship is riddled with holes... and sinks.";
+            endCombat();
+            return;
+        }
+    }
+
+    //pirate ship attacks you
+    std::cout << "The enemy ship fires its canons at you and hits you for " << dmgTaken << " damage!"
+              << std::endl << "You have " << ship.getCurrentHealth() << " health left" << std::endl << std::endl;
+    ship.takeDamage(dmgTaken);
+    if (ship.getCurrentHealth() <= 0)
+    {
+        ship.setState(ShipStates::DEAD);
+        std::cout
+                << "The pirateship proved too strong for you and your ship slowly sinks to the bottom of the ocean..."
+                << std::endl << "Game over..." << std::endl;
+        endCombat();
+        throw QuitGame(-EINVAL, "Quit the game successfully");
+        return;
+    }
+
+    //escape attempt
+    if (key == 1)
+    {
+        if (handleEscape())
+        {
+            std::cout << "You escaped the pirateship" << std::endl;
+            endCombat();
+        } else
+            std::cout << "You couldn't escape the vessel" << std::endl;
+    }
+}
+
+int Sea::getDamage(const std::map<CanonType, int> &canons)
+{
+    int dmg{0};
+    for (const auto&[type, value]: canons)
+    {
+        if (type == CanonType::SMALL)
+            dmg += RNG::generateRandomNumber(0, 2);
+        else if (type == CanonType::MEDIUM)
+            dmg += RNG::generateRandomNumber(0, 4);
+        else if (type == CanonType::LARGE)
+            dmg += RNG::generateRandomNumber(0, 6);
+    }
+
+    return dmg;
 }
 
 std::optional<Ship> Sea::generatePirateShip()
@@ -110,26 +202,58 @@ std::optional<Ship> Sea::generatePirateShip()
     for (int i = 0; i < totalCanons; ++i)
     {
         int randType{RNG::generateRandomNumber(1, 3)};
-        std::string type;
+        CanonType type;
 
         switch (randType)
         {
             case 1:
-                type = "small canon";
+                type = CanonType::SMALL;
                 break;
             case 2:
-                type = "medium canon";
+                type = CanonType::MEDIUM;
                 break;
             case 3:
-                type = "large canon";
+                type = CanonType::LARGE;
                 break;
         }
 
-        if(tempShip.getAbility() == "licht" && type == "large canon")
-            type = "medium canon";
+        if (tempShip.getAbility() == "licht" && type == CanonType::LARGE)
+            type = CanonType::MEDIUM;
 
         tempShip.boughtCanon(type, 1, 0);
     }
 
     return tempShip;
+}
+
+bool Sea::handleEscape()
+{
+    int escapeChance{0};
+
+    if (ship.getAbility() == "klein")
+        escapeChance += 50;
+    else if (ship.getAbility() == "licht")
+        escapeChance += 30;
+    else if (ship.getAbility() == "log")
+        escapeChance += 5;
+
+    if (pirateShip->getAbility() == "licht")
+        escapeChance += 10;
+    else if (pirateShip->getAbility() == "log")
+        escapeChance += 25;
+
+    if (escapeChance >= RNG::generateRandomNumber(100))
+        return true;
+    else
+        return false;
+}
+
+void Sea::endCombat()
+{
+    ship.setState(ShipStates::SAILING);
+    pirateShip = std::nullopt;
+    menuHandler::resetCursor();
+    minLine -= 4;
+    system("pause");
+    system("cls");
 }

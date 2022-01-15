@@ -24,12 +24,19 @@ class Sea : public Place
 
     void playRound();
 
+    static int getDamage(const std::map<CanonType, int> &canons);
+
+    bool handleEscape();
+
+    void endCombat();
+
 public:
     Sea(std::tuple<int, std::string, int> dest, Ship &ship);
 
     void handleCombat(int key);
 
     std::optional<Ship> generatePirateShip();
+
 };
 
 
