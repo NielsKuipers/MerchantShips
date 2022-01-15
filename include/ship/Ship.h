@@ -10,6 +10,7 @@
 #include <vector>
 #include <game/menuHandler.h>
 #include "ShipStates.h"
+#include "CanonTypes.h"
 
 class Ship
 {
@@ -23,7 +24,7 @@ class Ship
     int health{};
     int currentGold{};
     std::string ability;
-    std::map<std::string, int> canons;
+    std::map<CanonType, int> canons;
     std::map<std::string, int> goods;
     std::tuple<int, std::string, int> destination;
     ShipStates currentState{ShipStates::DEFAULT};
@@ -59,7 +60,7 @@ public:
     const std::string &getAbility() const
     { return this->ability; };
 
-    const std::map<std::string, int> &getCanons() const
+    const std::map<CanonType, int> &getCanons() const
     { return this->canons; };
 
     const std::map<std::string, int> &getGoods() const
@@ -88,15 +89,17 @@ public:
 
     void changeShip(std::tuple<std::string, int, int, int, int, std::string> &tuple);
 
-    void boughtCanon(const std::string &canonType, int amount, int spent);
+    void boughtCanon(CanonType canonType, int amount, int spent);
 
-    void soldCanon(const std::string &canonType, int amount, int earned);
+    void soldCanon(CanonType canonType, int amount, int earned);
 
     int displayShipInfo() const;
 
     void repair();
 
     void takeDamage(int dmg);
+
+    void removeCargo();
 };
 
 #endif //MERCHANTSHIPS_SHIP_H

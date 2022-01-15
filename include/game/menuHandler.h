@@ -23,11 +23,11 @@ namespace menuHandler
     static int posX{0};
     static int posY{0};
     static std::string previousLine;
+    static bool resetForInput{false};
 
     static void setCursor(const std::string &line, short x = posX, short y = posY)
     {
         static HANDLE h = nullptr;
-        static CONSOLE_CURSOR_INFO cursor;
 
         if (!h)
             h = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -45,6 +45,18 @@ namespace menuHandler
         SetConsoleTextAttribute(h, 7);
     }
 
+    static void setCursorForText(short x = posX, short y = posY)
+    {
+        static HANDLE h = nullptr;
+
+        if (!h)
+            h = GetStdHandle(STD_OUTPUT_HANDLE);
+
+        COORD c = {x, y};
+        SetConsoleCursorPosition(h, c);
+        resetForInput = true;
+    }
+
     static void resetCursor()
     {
         previousLine = "";
@@ -53,6 +65,12 @@ namespace menuHandler
 
     static std::tuple<int, int> handleInput(std::vector<std::string> &line, int key, int min, int max)
     {
+        if (resetForInput)
+        {
+            setCursorForText();
+            resetForInput = false;
+        }
+
         switch (key)
         {
             case KEY_UP:
@@ -102,7 +120,7 @@ namespace menuHandler
 
         std::cout << "Are you sure? y/n: ";
         std::cin >> result;
-        while(!std::cin.good() || (result != "y" && result != "n"))
+        while (!std::cin.good() || (result != "y" && result != "n"))
         {
             std::cin.clear();
             std::cin.ignore(1000, '\n');
@@ -111,6 +129,21 @@ namespace menuHandler
         }
 
         return result;
+    }
+
+    static void deleteLines(int lines, int amount)
+    {
+        HANDLE hConsoleOutput{GetStdHandle(STD_OUTPUT_HANDLE)};
+        CONSOLE_SCREEN_BUFFER_INFO csbi{};
+        BOOL ok{GetConsoleScreenBufferInfo(hConsoleOutput, &csbi)};
+
+        for (int i = 0; i < lines; ++i)
+        {
+            std::cout << std::string(amount, ' ');
+            setCursorForText(0, csbi.dwCursorPosition.Y + i);
+        }
+
+        setCursorForText(0, csbi.dwCursorPosition.Y);
     }
 }
 

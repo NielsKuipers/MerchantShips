@@ -219,7 +219,7 @@ void Harbor::buyItem(int y)
     if (amount != 0)
     {
         currentShop == HarborStates::GOODS ? ship.boughtItem(std::get<0>(item), amount, totalCost)
-                                           : ship.boughtCanon(std::get<0>(item), amount, totalCost);
+                                           : ship.boughtCanon(convertToCanon(std::get<0>(item)), amount, totalCost);
         std::get<1>(item) -= amount;
         std::cout << std::endl << "You bought " << amount << " " << std::get<0>(item)
                   << " for a total of " << totalCost << " gold" << std::endl << std::endl;
@@ -250,7 +250,7 @@ void Harbor::sellItem(int y)
     if (amount != 0)
     {
         currentShop == HarborStates::GOODS ? ship.soldItem(std::get<0>(item), amount, totalEarned)
-                                           : ship.soldCanon(std::get<0>(item), amount, totalEarned);
+                                           : ship.soldCanon(convertToCanon(std::get<0>(item)), amount, totalEarned);
 
         std::get<1>(item) += 1;
         std::cout << std::endl << "You sold " << amount << " " << std::get<0>(item)
@@ -386,4 +386,15 @@ void Harbor::leaveHarbor(int y)
     ship.setDestination(locations[y]);
     ship.setState(ShipStates::LEAVING);
     system("cls");
+}
+
+CanonType Harbor::convertToCanon(const std::string &string) {
+    if(string == "small canon")
+        return CanonType::SMALL;
+    else if (string == "medium canon")
+        return CanonType::MEDIUM;
+    else if (string == "large canon")
+        return CanonType::LARGE;
+    else
+        throw std::invalid_argument("no sting matches a canon");
 }

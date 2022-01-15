@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 add_library(MerchantShips-common STATIC
-        src/Game.cpp include/game/RandomGeneration.h include/game/DBManager.h src/ship/Ship.cpp src/harbor/Harbor.cpp include/interface/Place.h include/game/menuHandler.h src/sea/Sea.cpp include/sea/Sea.h exceptions/QuitGame.cpp exceptions/QuitGame.h include/ship/ShipStates.h)
+        src/Game.cpp include/game/RandomGeneration.h include/game/DBManager.h src/ship/Ship.cpp src/harbor/Harbor.cpp include/interface/Place.h include/game/menuHandler.h src/sea/Sea.cpp include/sea/Sea.h exceptions/QuitGame.cpp exceptions/QuitGame.h include/ship/ShipStates.h include/ship/CanonTypes.h)
 
 target_include_directories(MerchantShips-common PRIVATE
         src

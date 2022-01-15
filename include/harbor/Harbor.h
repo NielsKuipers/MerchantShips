@@ -52,6 +52,8 @@ class Harbor : public Place
 
     void leaveHarbor(int y);
 
+    CanonType convertToCanon(const std::string &string);
+
 public:
     Harbor(int id, const std::string &name, Ship &ship);
 

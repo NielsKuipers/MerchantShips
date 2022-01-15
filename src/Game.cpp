@@ -37,8 +37,16 @@ Game::Game()
             "(SELECT bijzonderheid FROM bijzonderheden b WHERE b.id = sb.bijzonderheid_id) "
             "FROM schepen s INNER JOIN schepen_bijzonderheden sb on s.id = sb.schip_id ORDER BY random() LIMIT 1")[0]};
     const auto randomGold{RNG::generateRandomNumber(100000, 250000)};
-    ship = Ship{randomShip[0], std::stoi(randomShip[1]), std::stoi(randomShip[2]), std::stoi(randomShip[3]),
+//    ship = Ship{randomShip[0], std::stoi(randomShip[1]), std::stoi(randomShip[2]), std::stoi(randomShip[3]),
+//                std::stoi(randomShip[4]), randomShip[5], randomGold};
+
+
+    ship = Ship{randomShip[0], std::stoi(randomShip[1]), 500, 6,
                 std::stoi(randomShip[4]), randomShip[5], randomGold};
+    ship.boughtItem("cum", 350, 0);
+    ship.boughtCanon(CanonType::LARGE, 2, 0);
+    ship.boughtCanon(CanonType::MEDIUM, 2, 0);
+    ship.boughtCanon(CanonType::SMALL, 2, 0);
 
     //generate a random harbor
     const auto randomHarbor{DB::selectData("SELECT id, haven FROM havens ORDER BY RANDOM() LIMIT 1")[0]};

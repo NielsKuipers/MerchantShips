@@ -42,14 +42,14 @@ void Ship::boughtItem(const std::string &item, int amount, int spent)
     currentGold -= spent;
 }
 
-void Ship::boughtCanon(const std::string &canonType, int amount, int spent)
+void Ship::boughtCanon(const CanonType canonType, int amount, int spent)
 {
     canons[canonType] += amount;
     canonSpaceInUse += amount;
     currentGold -= spent;
 }
 
-void Ship::soldCanon(const std::string &canonType, int amount, int earned)
+void Ship::soldCanon(const CanonType canonType, int amount, int earned)
 {
     canons.at(canonType) -= amount;
     if (canons.at(canonType) == 0)
@@ -90,7 +90,7 @@ void Ship::changeShip(std::tuple<std::string, int, int, int, int, std::string> &
 
     if (std::get<3>(newShip) < canonSpaceInUse)
     {
-        std::vector<std::string> toRemove{};
+        std::vector<CanonType> toRemove{};
 
         for (auto &[key, val]: canons)
         {
@@ -169,5 +169,11 @@ void Ship::repair()
 void Ship::takeDamage(int dmg)
 {
     health -= dmg;
+}
+
+void Ship::removeCargo()
+{
+    goods.clear();
+    cargoSpaceInUse = 0;
 }
 
