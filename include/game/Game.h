@@ -11,6 +11,8 @@
 #include "sea/Sea.h"
 #include <conio.h>
 #include <iomanip>
+#include <cstdio>
+#include <game/UIHandler.h>
 
 class Game
 {

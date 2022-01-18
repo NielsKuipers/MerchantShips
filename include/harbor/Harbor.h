@@ -7,7 +7,7 @@
 
 #include <string>
 #include <interface/Place.h>
-#include <game/menuHandler.h>
+#include <game/UIHandler.h>
 #include <game/DBManager.h>
 #include <game/RandomGeneration.h>
 #include <harbor/HarborStates.h>

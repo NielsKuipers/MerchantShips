@@ -19,13 +19,13 @@ void Harbor::handleInput(int key)
     std::tuple<int, int> menuPos;
     int posY;
 
-    menuPos = menuHandler::handleInput(options, key, minLine, options.size() + minLine);
+    menuPos = UIHandler::handleInput(options, key, minLine, options.size() + minLine);
     posY = std::get<1>(menuPos);
 
     if ((currentState == HarborStates::MENU) && key == KEY_SPACE)
     {
         setState(posY);
-        menuHandler::resetCursor();
+        UIHandler::resetCursor();
     }
 
     switch (currentState)
@@ -103,7 +103,7 @@ void Harbor::displayMenu()
 
     setOptions(menu);
     showOptions();
-    menuHandler::resetCursor();
+    UIHandler::resetCursor();
     setState(HarborStates::MENU);
 }
 
@@ -154,7 +154,7 @@ void Harbor::displayShop()
 {
     system("cls");
     options.clear();
-    menuHandler::resetCursor();
+    UIHandler::resetCursor();
     const auto &items{(currentShop == HarborStates::GOODS) ? goods : canons};
 
     //display information and set the minline to 5 so it skips these in selection
@@ -199,7 +199,7 @@ void Harbor::buyItem(int y)
               << "This will cost you " + std::to_string(std::get<2>(item)) << " gold each" << std::endl << std::endl
               << "How many do you wish to buy?" << std::endl
               << "Amount to buy: ";
-    amount = menuHandler::getNumberInput();
+    amount = UIHandler::getNumberInput();
 
     int totalCost = amount * std::get<2>(item);
     while (totalCost > gold || amount > space || amount > std::get<1>(item))
@@ -212,7 +212,7 @@ void Harbor::buyItem(int y)
             std::cout << std::endl << "You do not have enough gold for this purchase, try again." << std::endl;
 
         std::cout << "Amount to buy: ";
-        amount = menuHandler::getNumberInput();
+        amount = UIHandler::getNumberInput();
         totalCost = amount * std::get<2>(item);
     }
 
@@ -236,14 +236,14 @@ void Harbor::sellItem(int y)
     system("cls");
     std::cout << "Yeah, we buy " + std::get<0>(item) << std::endl << "How many do you wish to sell?" << std::endl
               << std::endl << "Amount to sell: ";
-    amount = menuHandler::getNumberInput();
+    amount = UIHandler::getNumberInput();
 
     int totalEarned = amount * std::get<2>(item);
     while (amount > has)
     {
         std::cout << std::endl << "Are you trying to cheat me? you only have " << has << " of this item" << std::endl;
         std::cout << "Amount to sell: ";
-        amount = menuHandler::getNumberInput();
+        amount = UIHandler::getNumberInput();
         totalEarned = amount * std::get<2>(item);
     }
 
@@ -267,7 +267,7 @@ void Harbor::displayShips()
 {
     system("cls");
     options.clear();
-    menuHandler::resetCursor();
+    UIHandler::resetCursor();
 
     std::cout << "Want to buy a new ship, eh?" << std::endl
               << "Here is our selection" << std::endl
@@ -322,7 +322,7 @@ void Harbor::buyShip(int y)
         std::cout << "You have more goods than you have room for on the new ship, you will lose some of them"
                   << std::endl << std::endl;
 
-    auto result{menuHandler::getConfirmInput()};
+    auto result{UIHandler::getConfirmInput()};
 
     if (result == "y")
     {
@@ -365,7 +365,7 @@ void Harbor::displayDestinations()
 {
     system("cls");
     options.clear();
-    menuHandler::resetCursor();
+    UIHandler::resetCursor();
 
     std::cout << "You take a look at the map and find some suitable locations to sail to" << std::endl
               << std::endl;

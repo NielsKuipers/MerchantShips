@@ -11,7 +11,7 @@ void Sea::handleInput(int key)
     while (ship.getState() == ShipStates::SAILING)
         playRound();
 
-    std::tuple<int, int> menuPos{menuHandler::handleInput(options, key, minLine, options.size() + minLine)};
+    std::tuple<int, int> menuPos{UIHandler::handleInput(options, key, minLine, options.size() + minLine)};
     int posY{std::get<1>(menuPos)};
 
     if (ship.getState() == ShipStates::COMBAT && key == KEY_SPACE)
@@ -38,7 +38,7 @@ void Sea::playRound()
         ship.setState(ShipStates::COMBAT);
         pirateShip = generatePirateShip();
         system("cls");
-        menuHandler::resetCursor();
+        UIHandler::resetCursor();
         std::cout << "A pirate ship has engaged you in combat!" << std::endl
                   << "it looks like it has about " << pirateShip->getTotalCanons() << " canons" << std::endl
                   << "What would you like to do?" << std::endl << std::endl;
@@ -65,7 +65,8 @@ void Sea::playRound()
         movement = handleStorm();
 
     std::get<2>(destination) -= movement;
-    std::cout << "The current wind causes you to move " << movement << " miles" << std::endl;
+    std::cout << "The current wind causes you to move " << movement << " miles" << std::endl
+    << "You are now " << std::get<2>(destination) << " miles from your destination" << std::endl << std::endl;
 
     if (std::get<2>(destination) <= 0)
     {
@@ -103,8 +104,8 @@ int Sea::handleStorm()
 
 void Sea::handleCombat(int key)
 {
-    menuHandler::setCursorForText(0, minLine + options.size() + 1);
-    menuHandler::deleteLines(7, 100);
+    UIHandler::setCursorForText(0, minLine + options.size() + 1);
+    UIHandler::deleteLines(7, 100);
 
     //surrender
     if (key == 2)
@@ -252,7 +253,7 @@ void Sea::endCombat()
 {
     ship.setState(ShipStates::SAILING);
     pirateShip = std::nullopt;
-    menuHandler::resetCursor();
+    UIHandler::resetCursor();
     minLine -= 4;
     system("pause");
     system("cls");

@@ -93,5 +93,5 @@ template<typename T>
 void Game::changeLocation(T location)
 {
     currentLocation = move(location);
-    menuHandler::resetCursor();
+    UIHandler::resetCursor();
 }

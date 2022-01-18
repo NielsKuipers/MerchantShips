@@ -145,7 +145,7 @@ void Ship::repair()
               << std::endl << "How many repairs would you like to do?"
               << std::endl << std::endl << "Number of repairs: ";
 
-    auto amount{menuHandler::getNumberInput()};
+    auto amount{UIHandler::getNumberInput()};
     while (currentGold < (amount * 10) || (amount * 10 + health) > maxHealth)
     {
         if (currentGold < (amount * 10))
@@ -154,7 +154,7 @@ void Ship::repair()
             std::cout << "We cannot repair your ship more than it has health, try again." << std::endl;
 
         std::cout << "Number of repairs: ";
-        amount = menuHandler::getNumberInput();
+        amount = UIHandler::getNumberInput();
     }
 
     if (amount != 0)

@@ -2,12 +2,17 @@
 // Created by Niels on 13/12/21.
 //
 
-#ifndef MERCHANTSHIPS_MENUHANDLER_H
-#define MERCHANTSHIPS_MENUHANDLER_H
+#ifndef MERCHANTSHIPS_UIHANDLER_H
+#define MERCHANTSHIPS_UIHANDLER_H
 
 #include <conio.h>
 #include <iomanip>
 #include <windows.h>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <chrono>
+#include <ctime>
 
 #define KEY_UP 72
 #define KEY_DOWN 80
@@ -18,12 +23,14 @@
 #define KEY_S 115
 #define KEY_BACKSPACE 8
 
-namespace menuHandler
+namespace UIHandler
 {
     static int posX{0};
     static int posY{0};
     static std::string previousLine;
     static bool resetForInput{false};
+    static auto t = std::time(nullptr);
+    static auto tm = *std::localtime(&t);
 
     static void setCursor(const std::string &line, short x = posX, short y = posY)
     {
@@ -145,6 +152,27 @@ namespace menuHandler
 
         setCursorForText(0, csbi.dwCursorPosition.Y);
     }
+
+    static void outputText(const std::string &text)
+    {
+        std::ostringstream oss;
+        oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+
+        std::string filename{"../logs/gamelog.txt"};
+        filename += oss.str();
+
+        std::ofstream out(filename, std::ios_base::app);
+
+        char delim {';'};
+        std::stringstream stream (text);
+        std::string line;
+
+        while(std::getline(stream, line, delim))
+        {
+            std::cout << line << std::endl;
+            out << line << std::endl;
+        }
+    }
 }
 
-#endif //MERCHANTSHIPS_MENUHANDLER_H
+#endif //MERCHANTSHIPS_UIHANDLER_H
