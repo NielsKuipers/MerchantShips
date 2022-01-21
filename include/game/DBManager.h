@@ -10,9 +10,31 @@
 #include <vector>
 #include <string>
 
-namespace DB
+class DB
 {
-    inline sqlite3 *db;
+    inline static sqlite3 *db;
+
+    DB() = default;
+
+public:
+    //copy constructor
+    DB(const DB &db) = delete;
+
+    //copy assignment
+    DB &operator=(const DB &db) = delete;
+
+    //destructor
+    ~DB()
+    {
+        sqlite3_close(db);
+        delete db;
+    }
+
+    //move constructor
+    DB(DB &&db) = delete;
+
+    //move assignment
+    DB &operator=(DB &&db) = delete;
 
     static void connect()
     {
@@ -43,6 +65,6 @@ namespace DB
 
         return result;
     }
-}
+};
 
 #endif //MERCHANTSHIPS_DBMANAGER_H

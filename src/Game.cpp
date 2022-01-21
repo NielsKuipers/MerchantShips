@@ -39,6 +39,7 @@ int Game::play()
     }
     catch (const std::exception &e)
     {
+        system("pause");
         return EXIT_SUCCESS;
     }
 

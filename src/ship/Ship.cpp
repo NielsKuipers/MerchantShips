@@ -3,17 +3,14 @@
 //
 
 #include <iostream>
+#include <utility>
 #include "ship/Ship.h"
 
-Ship::Ship(const std::string &type, int price, int cargo, int canons, int health, const std::string &ability, int gold)
+Ship::Ship(std::string type, int price, int cargo, int canons, int health, std::string ability, int gold)
+        : type(std::move(type)), price(price), cargoSpace(cargo), canonSpace(canons),
+          ability(std::move(ability)), currentGold(gold)
 {
-    this->type = type;
-    this->price = price;
-    this->cargoSpace = cargo;
-    this->canonSpace = canons;
     this->health = maxHealth = health;
-    this->ability = ability;
-    this->currentGold = gold;
 }
 
 int Ship::getItemAmount(const std::string &item) const

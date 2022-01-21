@@ -39,7 +39,7 @@ void Sea::playRound()
         pirateShip = generatePirateShip();
         system("cls");
         UIHandler::resetCursor();
-        UIHandler::outputText("A pirate ship has engaged you in combat!; it looks like it has about " +
+        UIHandler::outputText("A pirate ship has engaged you in combat!;it looks like it has about " +
                               std::to_string(pirateShip->getTotalCanons()) + " canons;What would you like to do?;;");
 
         showOptions();
@@ -149,7 +149,7 @@ void Sea::handleCombat(int key)
 
     //pirate ship attacks you
     UIHandler::outputText("The enemy ship fires its canons ar you and hits you for " + std::to_string(dmgTaken) +
-                          " damage!;You have " + std::to_string(ship.getCurrentHealth()) + "health left;;");
+                          " damage!;You have " + std::to_string(ship.getCurrentHealth()) + " health left;;");
     ship.takeDamage(dmgTaken);
     if (ship.getCurrentHealth() <= 0)
     {

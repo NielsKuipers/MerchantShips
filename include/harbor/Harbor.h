@@ -55,7 +55,7 @@ class Harbor : public Place
     CanonType convertToCanon(const std::string &string);
 
 public:
-    Harbor(int id, const std::string &name, Ship &ship);
+    Harbor(int id, std::string name, Ship &ship);
 
     void displayMenu();
 };

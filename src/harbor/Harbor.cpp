@@ -4,11 +4,10 @@
 
 #include "harbor/Harbor.h"
 
-Harbor::Harbor(int id, const std::string &name, Ship &ship) : ship(ship)
-{
-    this->id = id;
-    this->name = name;
+#include <utility>
 
+Harbor::Harbor(int id, std::string name, Ship &ship) : id(id), name(std::move(name)), ship(ship)
+{
     displayMenu();
     generateGoods();
     getLocations();
@@ -272,7 +271,7 @@ void Harbor::displayShips()
     UIHandler::resetCursor();
 
     UIHandler::outputText("Want to buy a new ship, eh?;"
-                          "Here is our selection;; Buy a ship with spacebar."
+                          "Here is our selection;;Buy a ship with spacebar."
                           ";Buying a ship will automatically sell you current one for half the original price"
                           ";Selling your current ship will earn you " + std::to_string(ship.getPrice() / 2) +
                           " gold.;;");

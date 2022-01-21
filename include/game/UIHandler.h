@@ -23,23 +23,21 @@
 #define KEY_S 115
 #define KEY_BACKSPACE 8
 
-class UIHandler
+namespace UIHandler
 {
-    inline static int posX{0};
-    inline static int posY{0};
-    inline static std::string previousLine{""};
-    inline static bool resetForInput{false};
-    inline static long long t{std::time(nullptr)};
-    inline static tm tm{*std::localtime(&t)};
-    inline static std::string filename{"../logs/gamelog.txt"};
+    static int posX{0};
+    static int posY{0};
+    static std::string previousLine;
+    static bool resetForInput{false};
+    static long long t{std::time(nullptr)};
+    static tm tm{*std::localtime(&t)};
+    inline std::string filename{"../logs/gamelog from "};
 
-    UIHandler() = default;
-public:
     static void initLog()
     {
         std::ostringstream oss;
         oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
-        filename += oss.str();
+        filename += oss.str() + ".txt";
     }
 
     static void setCursor(const std::string &line, short x = posX, short y = posY)
@@ -115,6 +113,21 @@ public:
         return std::make_tuple(posX, (posY - min));
     }
 
+    static void outputText(const std::string &text)
+    {
+        std::ofstream out(filename, std::ios_base::app);
+
+        char delim{';'};
+        std::stringstream stream(text);
+        std::string line;
+
+        while (std::getline(stream, line, delim))
+        {
+            std::cout << line << std::endl;
+            out << line << std::endl;
+        }
+    }
+
     static int getNumberInput()
     {
         int result;
@@ -165,22 +178,6 @@ public:
         }
 
         setCursorForText(0, csbi.dwCursorPosition.Y);
-    }
-
-    static void outputText(const std::string &text)
-    {
-
-        std::ofstream out(filename, std::ios_base::app);
-
-        char delim{';'};
-        std::stringstream stream(text);
-        std::string line;
-
-        while (std::getline(stream, line, delim))
-        {
-            std::cout << line << std::endl;
-            out << line << std::endl;
-        }
     }
 };
 

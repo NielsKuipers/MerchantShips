@@ -29,7 +29,7 @@ class Ship
     std::tuple<int, std::string, int> destination;
     ShipStates currentState{ShipStates::DEFAULT};
 public:
-    Ship(const std::string &type, int price, int cargo, int canons, int health, const std::string &ability, int gold);
+    Ship(std::string type, int price, int cargo, int canons, int health, std::string ability, int gold);
 
     Ship() = default;
 
