@@ -42,6 +42,15 @@ void Ship::boughtItem(const std::string &item, int amount, int spent)
     currentGold -= spent;
 }
 
+int Ship::getCanonAmount(CanonType canonType) const
+{
+    const auto &pos{canons.find(canonType)};
+    if (pos == canons.end())
+        return 0;
+    else
+        return pos->second;
+}
+
 void Ship::boughtCanon(const CanonType canonType, int amount, int spent)
 {
     canons[canonType] += amount;

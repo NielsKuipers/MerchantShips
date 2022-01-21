@@ -170,7 +170,9 @@ void Harbor::displayShop()
                 "Product: " + std::get<0>(product) +
                 " amount available: " + std::to_string(std::get<1>(product)) +
                 " price: " + std::to_string(std::get<2>(product)) +
-                " You have: " + std::to_string(ship.getItemAmount(std::get<0>(product)))
+                " You have: " + std::to_string(currentShop == HarborStates::GOODS ?
+                                               ship.getItemAmount(std::get<0>(product)) :
+                                               ship.getCanonAmount(convertToCanon(std::get<0>(product))))
         };
 
         options.emplace_back(line);
@@ -230,7 +232,8 @@ void Harbor::buyItem(int y)
 void Harbor::sellItem(int y)
 {
     auto &item{currentShop == HarborStates::GOODS ? goods[y] : canons[y]};
-    int has{ship.getItemAmount(std::get<0>(item))};
+    int has{currentShop == HarborStates::GOODS ? ship.getItemAmount(std::get<0>(item)) : ship.getCanonAmount(
+            convertToCanon(std::get<0>(item)))};
     int amount;
 
     system("cls");

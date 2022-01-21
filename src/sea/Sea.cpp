@@ -40,7 +40,7 @@ void Sea::playRound()
         system("cls");
         UIHandler::resetCursor();
         UIHandler::outputText("A pirate ship has engaged you in combat!; it looks like it has about " +
-                              std::to_string(pirateShip->getTotalCanons()) + " canons; What would you like to do?;;");
+                              std::to_string(pirateShip->getTotalCanons()) + " canons;What would you like to do?;;");
 
         showOptions();
         minLine += 4;
@@ -64,13 +64,13 @@ void Sea::playRound()
         movement = handleStorm();
 
     std::get<2>(destination) -= movement;
-    UIHandler::outputText("The current wind causes you to move " + std::to_string(movement) + " miles; You are now " +
+    UIHandler::outputText("The current wind causes you to move " + std::to_string(movement) + " miles;You are now " +
                           std::to_string(std::get<2>(destination)) + " miles from your destination;;");
 
     if (std::get<2>(destination) <= 0)
     {
         UIHandler::outputText(
-                "You can see the harbor approaching in the distance; You have arrived at your location!;");
+                "You can see the harbor approaching in the distance;You have arrived at your location!;");
         ship.setState(ShipStates::ARRIVING);
     }
 
@@ -136,7 +136,7 @@ void Sea::handleCombat(int key)
     if (key == 0)
     {
         UIHandler::outputText(
-                "You shoot at the enemy ship and hit it for " + std::to_string(dmgDone) + " damage!; It has " +
+                "You shoot at the enemy ship and hit it for " + std::to_string(dmgDone) + " damage!;It has " +
                 std::to_string(pirateShip->getCurrentHealth()) + " health left;;");
         pirateShip->takeDamage(dmgDone);
         if (pirateShip->getCurrentHealth() <= 0)

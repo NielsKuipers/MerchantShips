@@ -89,6 +89,8 @@ public:
 
     void changeShip(std::tuple<std::string, int, int, int, int, std::string> &tuple);
 
+    int getCanonAmount(CanonType canonType) const;
+
     void boughtCanon(CanonType canonType, int amount, int spent);
 
     void soldCanon(CanonType canonType, int amount, int earned);
