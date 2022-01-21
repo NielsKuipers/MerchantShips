@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <game/UIHandler.h>
 
 class Place
 {
@@ -18,7 +19,7 @@ public:
     void showOptions()
     {
         for (const auto &option: options)
-            std::cout << option << std::endl;
+            UIHandler::outputText(option + ";");
     };
 
     void setOptions(std::vector<std::string> menuOptions)

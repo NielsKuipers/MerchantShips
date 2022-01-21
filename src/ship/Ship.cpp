@@ -118,13 +118,13 @@ void Ship::changeShip(std::tuple<std::string, int, int, int, int, std::string> &
 
 int Ship::displayShipInfo() const
 {
-    std::cout << "Your current ship is a " << type << " of type " << ability << " worth " << price << " gold."
-              << std::endl << "Its current health is " << health << "/" << maxHealth << " and you have " << currentGold
-              << " gold."
-              << std::endl << "It currently has " << cargoSpaceInUse << "/" << cargoSpace << " goods"
-              << " and " << canonSpaceInUse << "/" << canonSpace << " canons."
-              << std::endl
-              << std::endl;
+    UIHandler::outputText(
+            "Your current ship is a " + type + " of type " + ability + " worth " + std::to_string(price) +
+            " gold.;Its current health is " + std::to_string(health) + "/" + std::to_string(maxHealth) +
+            " and you have " + std::to_string(currentGold) + " gold.;It currently has " +
+            std::to_string(cargoSpaceInUse) + "/" + std::to_string(cargoSpace) + " goods" + " and " +
+            std::to_string(canonSpaceInUse) + "/" + std::to_string(canonSpace) + " canons.;;"
+    );
 
     return 4;
 }
@@ -135,25 +135,25 @@ void Ship::repair()
 
     if (health == maxHealth)
     {
-        std::cout << "Your ship does not need any repairs right now." << std::endl << std::endl;
+        UIHandler::outputText("Your ship does not need any repairs right now.;;");
         system("pause");
         return;
     }
 
-    std::cout << "Yeah, we can repair your ship... it'll cost you 1 gold per 10 damage."
-              << std::endl << "Your current health is " << health << "/" << maxHealth
-              << std::endl << "How many repairs would you like to do?"
-              << std::endl << std::endl << "Number of repairs: ";
+    UIHandler::outputText(
+            "Yeah, we can repair your ship... it'll cost you 1 gold per 10 damage.;Your current health is " +
+            std::to_string(health) + "/" + std::to_string(maxHealth) +
+            ";How many repairs would you like to do?;;Number of repairs: ");
 
     auto amount{UIHandler::getNumberInput()};
     while (currentGold < (amount * 10) || (amount * 10 + health) > maxHealth)
     {
         if (currentGold < (amount * 10))
-            std::cout << "You do not have enough gold for these repairs, try again." << std::endl;
+            UIHandler::outputText("You do not have enough gold for these repairs, try again.;");
         else
-            std::cout << "We cannot repair your ship more than it has health, try again." << std::endl;
+            UIHandler::outputText("We cannot repair your ship more than it has health, try again.");
 
-        std::cout << "Number of repairs: ";
+        UIHandler::outputText("Number of repairs: ");
         amount = UIHandler::getNumberInput();
     }
 
@@ -161,7 +161,7 @@ void Ship::repair()
     {
         health += (amount * 10);
         currentGold -= (amount);
-        std::cout << std::endl << "Your ship has been repaired for " << (amount * 10) << " health!";
+        UIHandler::outputText(";Your ship has been repaired for " + std::to_string((amount * 10)) + " health!");
         system("pause");
     }
 }

@@ -23,14 +23,24 @@
 #define KEY_S 115
 #define KEY_BACKSPACE 8
 
-namespace UIHandler
+class UIHandler
 {
-    static int posX{0};
-    static int posY{0};
-    static std::string previousLine;
-    static bool resetForInput{false};
-    static auto t = std::time(nullptr);
-    static auto tm = *std::localtime(&t);
+    inline static int posX{0};
+    inline static int posY{0};
+    inline static std::string previousLine{""};
+    inline static bool resetForInput{false};
+    inline static long long t{std::time(nullptr)};
+    inline static tm tm{*std::localtime(&t)};
+    inline static std::string filename{"../logs/gamelog.txt"};
+
+    UIHandler() = default;
+public:
+    static void initLog()
+    {
+        std::ostringstream oss;
+        oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+        filename += oss.str();
+    }
 
     static void setCursor(const std::string &line, short x = posX, short y = posY)
     {
@@ -108,33 +118,37 @@ namespace UIHandler
     static int getNumberInput()
     {
         int result;
+        std::ofstream out(filename, std::ios_base::app);
 
         std::cin >> result;
         while (!std::cin.good())
         {
             std::cin.clear();
             std::cin.ignore(1000, '\n');
-            std::cout << "What are you saying? that's not a number, try again.";
+            outputText("What are you saying? that's not a number, try again.");
             std::cin >> result;
         }
 
+        out << result << std::endl;
         return result;
     }
 
     static std::string getConfirmInput()
     {
         std::string result;
+        std::ofstream out(filename, std::ios_base::app);
 
-        std::cout << "Are you sure? y/n: ";
+        outputText("Are you sure? y/n: ");
         std::cin >> result;
         while (!std::cin.good() || (result != "y" && result != "n"))
         {
             std::cin.clear();
             std::cin.ignore(1000, '\n');
-            std::cout << "Uhm... It's a simple yes or no answer, try again.";
+            outputText("Uhm... It's a simple yes or no answer, try again.");
             std::cin >> result;
         }
 
+        out << result << std::endl;
         return result;
     }
 
@@ -155,24 +169,19 @@ namespace UIHandler
 
     static void outputText(const std::string &text)
     {
-        std::ostringstream oss;
-        oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
-
-        std::string filename{"../logs/gamelog.txt"};
-        filename += oss.str();
 
         std::ofstream out(filename, std::ios_base::app);
 
-        char delim {';'};
-        std::stringstream stream (text);
+        char delim{';'};
+        std::stringstream stream(text);
         std::string line;
 
-        while(std::getline(stream, line, delim))
+        while (std::getline(stream, line, delim))
         {
             std::cout << line << std::endl;
             out << line << std::endl;
         }
     }
-}
+};
 
 #endif //MERCHANTSHIPS_UIHANDLER_H

@@ -39,9 +39,8 @@ void Sea::playRound()
         pirateShip = generatePirateShip();
         system("cls");
         UIHandler::resetCursor();
-        std::cout << "A pirate ship has engaged you in combat!" << std::endl
-                  << "it looks like it has about " << pirateShip->getTotalCanons() << " canons" << std::endl
-                  << "What would you like to do?" << std::endl << std::endl;
+        UIHandler::outputText("A pirate ship has engaged you in combat!; it looks like it has about " +
+                              std::to_string(pirateShip->getTotalCanons()) + " canons; What would you like to do?;;");
 
         showOptions();
         minLine += 4;
@@ -65,13 +64,13 @@ void Sea::playRound()
         movement = handleStorm();
 
     std::get<2>(destination) -= movement;
-    std::cout << "The current wind causes you to move " << movement << " miles" << std::endl
-    << "You are now " << std::get<2>(destination) << " miles from your destination" << std::endl << std::endl;
+    UIHandler::outputText("The current wind causes you to move " + std::to_string(movement) + " miles; You are now " +
+                          std::to_string(std::get<2>(destination)) + " miles from your destination;;");
 
     if (std::get<2>(destination) <= 0)
     {
-        std::cout << "You can see the harbor approaching in the distance" << std::endl
-                  << "You have arrived at your location!" << std::endl;
+        UIHandler::outputText(
+                "You can see the harbor approaching in the distance; You have arrived at your location!;");
         ship.setState(ShipStates::ARRIVING);
     }
 
@@ -83,7 +82,7 @@ int Sea::handleStorm()
     int rand{RNG::generateRandomNumber(1, 10)};
     int result{0};
 
-    std::cout << "You got caught in a storm!" << std::endl;
+    UIHandler::outputText("You got caught in a strom!;");
 
     if (rand >= 1 && rand <= 4)
         result = -1;
@@ -96,7 +95,7 @@ int Sea::handleStorm()
         int damage{(healthLoss / 100) * health};
 
         ship.takeDamage(damage);
-        std::cout << "Your ship took " << damage << " damage from the storm!" << std::endl;
+        UIHandler::outputText("Your ship took " + std::to_string(damage) + " damage from the storm!;");
     }
 
     return result;
@@ -123,7 +122,7 @@ void Sea::handleCombat(int key)
             result += (std::to_string(amountStolen) + " goods!");
         }
 
-        std::cout << result << std::endl << "You get away safely" << std::endl;
+        UIHandler::outputText(result + ";You get away safely;");
         ship.removeCargo();
 
         endCombat();
@@ -136,27 +135,27 @@ void Sea::handleCombat(int key)
     //attacking ship
     if (key == 0)
     {
-        std::cout << "You shoot at the enemy ship and hit it for " << dmgDone << " damage!" << std::endl
-        << "It has " << pirateShip->getCurrentHealth() << " health left" << std::endl << std::endl;
+        UIHandler::outputText(
+                "You shoot at the enemy ship and hit it for " + std::to_string(dmgDone) + " damage!; It has " +
+                std::to_string(pirateShip->getCurrentHealth()) + " health left;;");
         pirateShip->takeDamage(dmgDone);
         if (pirateShip->getCurrentHealth() <= 0)
         {
-            std::cout << "the enemy ship is riddled with holes... and sinks.";
+            UIHandler::outputText("the enemy ship is riddled with holes... and sinks.");
             endCombat();
             return;
         }
     }
 
     //pirate ship attacks you
-    std::cout << "The enemy ship fires its canons at you and hits you for " << dmgTaken << " damage!"
-              << std::endl << "You have " << ship.getCurrentHealth() << " health left" << std::endl << std::endl;
+    UIHandler::outputText("The enemy ship fires its canons ar you and hits you for " + std::to_string(dmgTaken) +
+                          " damage!;You have " + std::to_string(ship.getCurrentHealth()) + "health left;;");
     ship.takeDamage(dmgTaken);
     if (ship.getCurrentHealth() <= 0)
     {
         ship.setState(ShipStates::DEAD);
-        std::cout
-                << "The pirateship proved too strong for you and your ship slowly sinks to the bottom of the ocean..."
-                << std::endl << "Game over..." << std::endl;
+        UIHandler::outputText(
+                "The pirateship proved too strong for you and your ship slowly sinks to the bottom of the ocean...;Game over...;");
         endCombat();
         throw QuitGame(-EINVAL, "Quit the game successfully");
         return;
@@ -167,10 +166,10 @@ void Sea::handleCombat(int key)
     {
         if (handleEscape())
         {
-            std::cout << "You escaped the pirateship" << std::endl;
+            UIHandler::outputText("You escaped the pirateship!;");
             endCombat();
         } else
-            std::cout << "You couldn't escape the vessel" << std::endl;
+            UIHandler::outputText("You couldn't escape the vessel;");
     }
 }
 

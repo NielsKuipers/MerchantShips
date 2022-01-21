@@ -88,7 +88,7 @@ void Harbor::displayMenu()
 {
     system("cls");
     minLine = ship.displayShipInfo();
-    std::cout << "Welcome to the " << name << " habor!" << std::endl;
+    UIHandler::outputText("Welcome to the " + name + " harbor!;");
     ++minLine;
 
     menu =
@@ -158,11 +158,10 @@ void Harbor::displayShop()
     const auto &items{(currentShop == HarborStates::GOODS) ? goods : canons};
 
     //display information and set the minline to 5 so it skips these in selection
-    std::cout << "Welcome to the " << name << " market" << std::endl
-              << "You can buy items by pressing B, and sell them by pressing S" << std::endl << std::endl
-              << "You currently have " << ship.getGold() << " gold" << " and room for " << ship.getCargoSpace()
-              << " goods" << std::endl
-              << std::endl;
+    UIHandler::outputText("Wecome to the " + name + " market;" +
+                          "You can buy items by pressing B, and sell them by pressing S;;" +
+                          "You currently have " + std::to_string(ship.getGold()) + " gold and room for "
+                          + std::to_string(ship.getCargoSpace()) + " goods;;");
     minLine = 5;
 
     for (const auto &product: items)
@@ -195,23 +194,24 @@ void Harbor::buyItem(int y)
     int amount;
 
     system("cls");
-    std::cout << "Ah, you want to buy " + std::get<0>(item) << "?" << std::endl
-              << "This will cost you " + std::to_string(std::get<2>(item)) << " gold each" << std::endl << std::endl
-              << "How many do you wish to buy?" << std::endl
-              << "Amount to buy: ";
+    UIHandler::outputText("Ah, you want to buy " + std::get<0>(item) + "?;"
+                                                                       "This will cost you " +
+                          std::to_string(std::get<2>(item)) + " gold each;;"
+                                                              "How many do you wish to buy?;Amount to buy:");
     amount = UIHandler::getNumberInput();
 
     int totalCost = amount * std::get<2>(item);
     while (totalCost > gold || amount > space || amount > std::get<1>(item))
     {
         if (amount > space)
-            std::cout << std::endl << "Your ship does not have enough room for this purchase, try again." << std::endl;
+            UIHandler::outputText(";Your ship does not have enough room for this purchase, try again.;");
         else if (amount > std::get<1>(item))
-            std::cout << "We only have " << std::get<1>(item) << " of that item, please try again." << std::endl;
+            UIHandler::outputText(
+                    "We only have " + std::to_string(std::get<1>(item)) + " of that item, please try again.;");
         else
-            std::cout << std::endl << "You do not have enough gold for this purchase, try again." << std::endl;
+            UIHandler::outputText(";You do not have enough gold for this purchase, try again.;");
 
-        std::cout << "Amount to buy: ";
+        UIHandler::outputText("Amount to buy: ");
         amount = UIHandler::getNumberInput();
         totalCost = amount * std::get<2>(item);
     }
@@ -221,8 +221,8 @@ void Harbor::buyItem(int y)
         currentShop == HarborStates::GOODS ? ship.boughtItem(std::get<0>(item), amount, totalCost)
                                            : ship.boughtCanon(convertToCanon(std::get<0>(item)), amount, totalCost);
         std::get<1>(item) -= amount;
-        std::cout << std::endl << "You bought " << amount << " " << std::get<0>(item)
-                  << " for a total of " << totalCost << " gold" << std::endl << std::endl;
+        UIHandler::outputText(";You bought " + std::to_string(amount) + " " + std::get<0>(item)
+                              + " for a total of " + std::to_string(totalCost) + " gold;;");
         system("pause");
     }
 }
@@ -234,15 +234,14 @@ void Harbor::sellItem(int y)
     int amount;
 
     system("cls");
-    std::cout << "Yeah, we buy " + std::get<0>(item) << std::endl << "How many do you wish to sell?" << std::endl
-              << std::endl << "Amount to sell: ";
+    UIHandler::outputText("Yeah, we buy " + std::get<0>(item) + ";How many do you wish to sell?;;Amount to sell: ");
     amount = UIHandler::getNumberInput();
 
     int totalEarned = amount * std::get<2>(item);
     while (amount > has)
     {
-        std::cout << std::endl << "Are you trying to cheat me? you only have " << has << " of this item" << std::endl;
-        std::cout << "Amount to sell: ";
+        UIHandler::outputText(";Are you trying to cheat me? you only have " + std::to_string(has) + " of this item;");
+        UIHandler::outputText("Amount to sell: ");
         amount = UIHandler::getNumberInput();
         totalEarned = amount * std::get<2>(item);
     }
@@ -253,10 +252,10 @@ void Harbor::sellItem(int y)
                                            : ship.soldCanon(convertToCanon(std::get<0>(item)), amount, totalEarned);
 
         std::get<1>(item) += 1;
-        std::cout << std::endl << "You sold " << amount << " " << std::get<0>(item)
-                  << " for a total of " << totalEarned << " gold" << std::endl << std::endl;
+        UIHandler::outputText(";You sold " + std::to_string(amount) + " " + std::get<0>(item)
+                              + " for a total of " + std::to_string(totalEarned) + " gold;;");
 
-        if(ship.getGold() > 1000000)
+        if (ship.getGold() > 1000000)
             ship.setState(ShipStates::VICTORY);
 
         system("pause");
@@ -269,12 +268,11 @@ void Harbor::displayShips()
     options.clear();
     UIHandler::resetCursor();
 
-    std::cout << "Want to buy a new ship, eh?" << std::endl
-              << "Here is our selection" << std::endl
-              << std::endl << "Buy a ship with spacebar."
-              << std::endl << "Buying a ship will automatically sell you current one for half the original price"
-              << std::endl << "Selling your current ship will earn you " << ship.getPrice() / 2 << " gold."
-              << std::endl << std::endl;
+    UIHandler::outputText("Want to buy a new ship, eh?;"
+                          "Here is our selection;; Buy a ship with spacebar."
+                          ";Buying a ship will automatically sell you current one for half the original price"
+                          ";Selling your current ship will earn you " + std::to_string(ship.getPrice() / 2) +
+                          " gold.;;");
     minLine = 7;
 
     for (const auto &shipData: ships)
@@ -304,31 +302,29 @@ void Harbor::buyShip(int y)
 
     if (gold + (ship.getPrice() / 2) < std::get<1>(item))
     {
-        std::cout << "You do not have enough gold for this ship." << std::endl << std::endl;
+        UIHandler::outputText("You do not have enough gold for this ship.;;");
         system("pause");
         return;
     }
 
-    std::cout << "Ah, the " << std::get<0>(item) << "? A fine choice." << std::endl
-              << "This will cost you " << std::get<1>(item) << " gold" << std::endl
-              << "This will exchange your current ship for the new one, are you sure?" << std::endl
-              << std::endl;
+    UIHandler::outputText(
+            "Ah, the " + std::get<0>(item) + "? A fine choice.; This will cost you " +
+            std::to_string(std::get<1>(item)) +
+            " gold; This will exchange your current ship for the new one, are you sure?;;");
 
     if (ship.getTotalCanons() > std::get<3>(item))
-        std::cout
-                << "You have more canons than you have room for on the new ship, you will lose some of them"
-                << std::endl << std::endl;
+        UIHandler::outputText(
+                "You have more canons than you have room for on the new ship, you will lose some of them;;");
     if (ship.getTotalCargo() > std::get<2>(item))
-        std::cout << "You have more goods than you have room for on the new ship, you will lose some of them"
-                  << std::endl << std::endl;
+        UIHandler::outputText(
+                "You have more goods than you have room for on the new ship, you will lose some of them;;");
 
     auto result{UIHandler::getConfirmInput()};
 
     if (result == "y")
     {
         ship.changeShip(item);
-        std::cout << std::endl << "You have successfully bought the " << std::get<0>(item) << "!" << std::endl
-                  << std::endl;
+        UIHandler::outputText(";You have successfully bought the " + std::get<0>(item) + "!;;");
         system("pause");
     } else
         return;
@@ -367,8 +363,7 @@ void Harbor::displayDestinations()
     options.clear();
     UIHandler::resetCursor();
 
-    std::cout << "You take a look at the map and find some suitable locations to sail to" << std::endl
-              << std::endl;
+    UIHandler::outputText("You take a look at the map and find some suitable locations to sail to;;");
     minLine = 2;
 
     for (const auto &locationData: locations)
@@ -392,8 +387,9 @@ void Harbor::leaveHarbor(int y)
     system("cls");
 }
 
-CanonType Harbor::convertToCanon(const std::string &string) {
-    if(string == "small canon")
+CanonType Harbor::convertToCanon(const std::string &string)
+{
+    if (string == "small canon")
         return CanonType::SMALL;
     else if (string == "medium canon")
         return CanonType::MEDIUM;

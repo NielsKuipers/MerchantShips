@@ -19,7 +19,7 @@ int Game::play()
             } else if (ship.getState() == ShipStates::ARRIVING)
             {
                 //get destination
-                std::string query {"SELECT id, haven FROM havens WHERE id="};
+                std::string query{"SELECT id, haven FROM havens WHERE id="};
                 query += std::to_string(std::get<0>(ship.getDestination()));
                 const auto h{DB::selectData(query)[0]};
 
@@ -29,8 +29,8 @@ int Game::play()
             } else if (ship.getState() == ShipStates::VICTORY)
             {
                 system("cls");
-                std::cout << "You have amassed a wealth of " << ship.getGold() << " gold, you win!!!" << std::endl
-                << "The game will now shut down, thanks for playing!" << std::endl << std::endl;
+                UIHandler::outputText("You have amassed a wealth of " + std::to_string(ship.getGold()) +
+                                      " gold, you win!!!; The game will now shut down, thanks for playing!;;");
                 system("pause");
 
                 return EXIT_SUCCESS;
@@ -48,6 +48,7 @@ int Game::play()
 Game::Game()
 {
     DB::connect();
+    UIHandler::initLog();
 
     //generate a random ship with a random amount of gold
     const auto randomShip{DB::selectData(
@@ -55,16 +56,16 @@ Game::Game()
             "(SELECT bijzonderheid FROM bijzonderheden b WHERE b.id = sb.bijzonderheid_id) "
             "FROM schepen s INNER JOIN schepen_bijzonderheden sb on s.id = sb.schip_id ORDER BY random() LIMIT 1")[0]};
     const auto randomGold{RNG::generateRandomNumber(100000, 250000)};
-//    ship = Ship{randomShip[0], std::stoi(randomShip[1]), std::stoi(randomShip[2]), std::stoi(randomShip[3]),
-//                std::stoi(randomShip[4]), randomShip[5], randomGold};
+    ship = Ship{randomShip[0], std::stoi(randomShip[1]), std::stoi(randomShip[2]), std::stoi(randomShip[3]),
+                std::stoi(randomShip[4]), randomShip[5], randomGold};
 
-
-    ship = Ship{randomShip[0], std::stoi(randomShip[1]), 500, 6,
-                std::stoi(randomShip[4]), randomShip[5], 999999};
-    ship.boughtItem("vis", 350, 0);
-    ship.boughtCanon(CanonType::LARGE, 2, 0);
-    ship.boughtCanon(CanonType::MEDIUM, 2, 0);
-    ship.boughtCanon(CanonType::SMALL, 2, 0);
+//TEST SHIP
+//    ship = Ship{randomShip[0], std::stoi(randomShip[1]), 500, 6,
+//                std::stoi(randomShip[4]), randomShip[5], 999999};
+//    ship.boughtItem("vis", 350, 0);
+//    ship.boughtCanon(CanonType::LARGE, 2, 0);
+//    ship.boughtCanon(CanonType::MEDIUM, 2, 0);
+//    ship.boughtCanon(CanonType::SMALL, 2, 0);
 
     //generate a random harbor
     const auto randomHarbor{DB::selectData("SELECT id, haven FROM havens ORDER BY RANDOM() LIMIT 1")[0]};
