@@ -141,10 +141,10 @@ void Sea::handleCombat(int key)
     //attacking ship
     if (key == 0)
     {
+        pirateShip->takeDamage(dmgDone);
         UIHandler::outputText(
                 "You shoot at the enemy ship and hit it for " + std::to_string(dmgDone) + " damage!;It has " +
                 std::to_string(pirateShip->getCurrentHealth()) + " health left;;");
-        pirateShip->takeDamage(dmgDone);
         if (pirateShip->getCurrentHealth() <= 0)
         {
             UIHandler::outputText("the enemy ship is riddled with holes... and sinks.");
@@ -154,9 +154,9 @@ void Sea::handleCombat(int key)
     }
 
     //pirate ship attacks you
+    ship.takeDamage(dmgTaken);
     UIHandler::outputText("The enemy ship fires its canons ar you and hits you for " + std::to_string(dmgTaken) +
                           " damage!;You have " + std::to_string(ship.getCurrentHealth()) + " health left;;");
-    ship.takeDamage(dmgTaken);
     if (ship.getCurrentHealth() <= 0)
     {
         ship.setState(ShipStates::DEAD);
