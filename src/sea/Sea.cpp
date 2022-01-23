@@ -36,7 +36,7 @@ void Sea::playRound()
     if (encounter == 0)
     {
         ship.setState(ShipStates::COMBAT);
-        pirateShip = generatePirateShip();
+        generatePirateShip();
         system("cls");
         UIHandler::resetCursor();
         UIHandler::outputText("A pirate ship has engaged you in combat!;it looks like it has about " +
@@ -77,7 +77,7 @@ void Sea::playRound()
     system("pause");
 }
 
-int Sea::handleStorm()
+int Sea::handleStorm() const
 {
     int rand{RNG::generateRandomNumber(1, 10)};
     int result{0};
@@ -189,7 +189,7 @@ int Sea::getDamage(const std::map<CanonType, int> &canons)
     return dmg;
 }
 
-std::optional<Ship> Sea::generatePirateShip()
+void Sea::generatePirateShip()
 {
     const auto randomShip{DB::selectData(
             "SELECT s.type, s.prijs, s.laadruimte, s.kanonnen, s.schadepunten, "
@@ -223,10 +223,10 @@ std::optional<Ship> Sea::generatePirateShip()
         tempShip.boughtCanon(type, 1, 0);
     }
 
-    return tempShip;
+    pirateShip = tempShip;
 }
 
-bool Sea::handleEscape()
+bool Sea::handleEscape() const
 {
     int escapeChance{0};
 

@@ -1,0 +1,11 @@
+Your current ship is a Pinnace of type licht worth 10000 gold.
+Its current health is 100/100 and you have 202859 gold.
+It currently has 0/200 goods and 0/8 canons.
+
+Welcome to the Santa Marta harbor!
+1. Trade goods
+2. Trade canons
+3. Trade ships
+4. Leave harbor
+5. Repair ship
+6. Quit game

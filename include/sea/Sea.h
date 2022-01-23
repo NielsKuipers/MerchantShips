@@ -20,23 +20,21 @@ class Sea : public Place
 
     void handleInput(int key) override;
 
-    int handleStorm();
+    int handleStorm() const;
 
     void playRound();
 
     static int getDamage(const std::map<CanonType, int> &canons);
 
-    bool handleEscape();
+    bool handleEscape() const;
 
     void endCombat();
 
-public:
-    Sea(std::tuple<int, std::string, int> dest, Ship &ship);
-
     void handleCombat(int key);
 
-    std::optional<Ship> generatePirateShip();
-
+    void generatePirateShip();
+public:
+    Sea(std::tuple<int, std::string, int> dest, Ship &ship);
 };
 
 

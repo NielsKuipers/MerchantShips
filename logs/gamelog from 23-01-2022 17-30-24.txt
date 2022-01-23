@@ -1,0 +1,11 @@
+Your current ship is a Sloep of type klein worth 19000 gold.
+Its current health is 110/110 and you have 117343 gold.
+It currently has 0/200 goods and 0/14 canons.
+
+Welcome to the Cayman harbor!
+1. Trade goods
+2. Trade canons
+3. Trade ships
+4. Leave harbor
+5. Repair ship
+6. Quit game

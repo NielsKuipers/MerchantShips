@@ -12,6 +12,8 @@ target_include_directories(MerchantShips-common PRIVATE
         PUBLIC
         include)
 
+add_subdirectory(tests)
+
 add_executable(MerchantShips src/main.cpp include/sqlite/sqlite3.c include/harbor/HarborStates.h)
 
 target_link_libraries(MerchantShips PRIVATE MerchantShips-common)
