@@ -14,7 +14,7 @@
 class Place
 {
 public:
-    virtual void handleInput(int key) = 0;
+    virtual void handleInput() = 0;
 
     void showOptions()
     {

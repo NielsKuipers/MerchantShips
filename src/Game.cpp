@@ -10,7 +10,8 @@ int Game::play()
     {
         while (playing)
         {
-            handleInput(_getch());
+            currentLocation->handleInput();
+
             if (ship.getState() == ShipStates::LEAVING)
             {
                 auto s{std::make_unique<Sea>(ship.getDestination(), ship)};
@@ -60,14 +61,6 @@ Game::Game()
     ship = Ship{randomShip[0], std::stoi(randomShip[1]), std::stoi(randomShip[2]), std::stoi(randomShip[3]),
                 std::stoi(randomShip[4]), randomShip[5], randomGold};
 
-//TEST SHIP
-//    ship = Ship{randomShip[0], std::stoi(randomShip[1]), 500, 6,
-//                std::stoi(randomShip[4]), randomShip[5], 999999};
-//    ship.boughtItem("vis", 350, 0);
-//    ship.boughtCanon(CanonType::LARGE, 2, 0);
-//    ship.boughtCanon(CanonType::MEDIUM, 2, 0);
-//    ship.boughtCanon(CanonType::SMALL, 2, 0);
-
     //generate a random harbor
     const auto randomHarbor{DB::selectData("SELECT id, haven FROM havens ORDER BY RANDOM() LIMIT 1")[0]};
     std::unique_ptr<Place> harbor(new Harbor(std::stoi(randomHarbor[0]), randomHarbor[1], ship));
@@ -80,15 +73,6 @@ Game::Game()
     cursor.dwSize = 100;
     cursor.bVisible = false;
     SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor);
-}
-
-void Game::handleInput(int key) const
-{
-    //double code for arrow key
-    if (key == 224)
-        return;
-
-    currentLocation->handleInput(key);
 }
 
 template<typename T>

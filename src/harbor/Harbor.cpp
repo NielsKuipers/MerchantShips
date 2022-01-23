@@ -13,8 +13,14 @@ Harbor::Harbor(int id, std::string name, Ship &ship) : id(id), name(std::move(na
     getLocations();
 }
 
-void Harbor::handleInput(int key)
+void Harbor::handleInput()
 {
+    int key{_getch()};
+
+    //double code for arrow key
+    if (key == 224)
+        return;
+
     std::tuple<int, int> menuPos;
     int posY;
 

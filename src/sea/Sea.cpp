@@ -6,10 +6,16 @@
 #include "game/DBManager.h"
 #include "../../exceptions/QuitGame.h"
 
-void Sea::handleInput(int key)
+void Sea::handleInput()
 {
     while (ship.getState() == ShipStates::SAILING)
         playRound();
+
+    int key {_getch()};
+
+    //double code for arrow key
+    if (key == 224)
+        return;
 
     std::tuple<int, int> menuPos{UIHandler::handleInput(options, key, minLine, options.size() + minLine)};
     int posY{std::get<1>(menuPos)};

@@ -18,7 +18,7 @@ class Sea : public Place
     Ship &ship;
     std::optional<Ship> pirateShip{std::nullopt};
 
-    void handleInput(int key) override;
+    void handleInput() override;
 
     int handleStorm() const;
 

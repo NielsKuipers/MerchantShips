@@ -18,7 +18,7 @@
 
 class Harbor : public Place
 {
-    void handleInput(int key) override;
+    void handleInput() override;
 
     int id;
     std::string name;
