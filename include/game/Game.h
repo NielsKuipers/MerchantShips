@@ -20,7 +20,7 @@ class Game
     Ship ship;
     std::unique_ptr<Place> currentLocation;
 
-    void handleInput(int key) const;
+    static void displayTitle();
 
     template<typename T>
     void changeLocation(T location);

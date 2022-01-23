@@ -70,17 +70,19 @@ void Sea::playRound()
         movement = handleStorm();
 
     std::get<2>(destination) -= movement;
-    UIHandler::outputText("The current wind causes you to move " + std::to_string(movement) + " miles;You are now " +
-                          std::to_string(std::get<2>(destination)) + " miles from your destination;;");
+    UIHandler::outputText("The current wind causes you to move " + std::to_string(movement) + " miles;");
 
     if (std::get<2>(destination) <= 0)
     {
         UIHandler::outputText(
                 "You can see the harbor approaching in the distance;You have arrived at your location!;");
         ship.setState(ShipStates::ARRIVING);
+        return;
     }
 
+    UIHandler::outputText("You are now " + std::to_string(std::get<2>(destination)) + " miles from your destination;;");
     system("pause");
+    UIHandler::outputText(";");
 }
 
 int Sea::handleStorm() const

@@ -161,12 +161,14 @@ void Harbor::displayShop()
     options.clear();
     UIHandler::resetCursor();
     const auto &items{(currentShop == HarborStates::GOODS) ? goods : canons};
+    const auto &space{currentShop == HarborStates::GOODS ? std::to_string(ship.getCargoSpace()) + " goods"
+                                                         : std::to_string(ship.getCanonSpace()) + " canons"};
 
     //display information and set the minline to 5 so it skips these in selection
     UIHandler::outputText("Wecome to the " + name + " market;" +
-                          "You can buy items by pressing B, and sell them by pressing S;;" +
+                          "You can buy items by pressing B, and sell them by pressing S, use backspace to return;;" +
                           "You currently have " + std::to_string(ship.getGold()) + " gold and room for "
-                          + std::to_string(ship.getCargoSpace()) + " goods;;");
+                          + space + ";;");
     minLine = 5;
 
     for (const auto &product: items)
@@ -277,7 +279,7 @@ void Harbor::displayShips()
     UIHandler::resetCursor();
 
     UIHandler::outputText("Want to buy a new ship, eh?;"
-                          "Here is our selection;;Buy a ship with spacebar."
+                          "Here is our selection;;Buy a ship with spacebar. Return with backspace."
                           ";Buying a ship will automatically sell you current one for half the original price"
                           ";Selling your current ship will earn you " + std::to_string(ship.getPrice() / 2) +
                           " gold.;;");
